@@ -12,9 +12,9 @@
 
 ![Build](https://img.shields.io/github/actions/workflow/status/GravityLib/GravLib/build.yml?style=for-the-badge)
 
-Welcome Adventurer! This repository is a merged effort between programmers of active V5RC teams **1831E and 1831A** in the "high stakes" season. 
+Welcome Adventurer! This repository is a merged effort between programmers of active V5RC teams **1831D and 1831A** in the "Push Back" season. 
 
-With this project, we are aiming to extend upon the existing LemLib project by @SizzinSeal and its contributors, optimising it for the "high stakes" season. 
+With this project, we are aiming to extend upon the existing LemLib project by @SizzinSeal and its contributors, optimising it for the "Push Back" season. 
 
 If you decide to use our code, please consider **starring our project** (and lemlib) to support us!
 
@@ -36,9 +36,9 @@ This project is licensed under the MIT license. Check [LICENSE](https://github.c
 
 ## About Us  
 
-**Team 1831E** is a currently active V5RC **HS** team based in **The King's School, Paramatta, Sydney Australia** competing in the VEX Robotics Competition 2024-2025 "High Stakes". 
+**Team 1831D** is a currently active V5RC **HS** team based in **The King's School, Paramatta, Sydney Australia** competing in the VEX Robotics Competition 2025-2026 "Push Back". 
 
-**Team 1831A** is a currently active V5RC **MS** team based in the same school.
+**Team 1831A** is a currently active V5RC **HS** team based in the same school.
 
 <!--
 NOTE - Commented out
@@ -48,7 +48,7 @@ NOTE - Commented out
 Here's an overview of the repository:  
 
 ```
-1831E-Robotics/
+1831D-Robotics/
 ├── include/            # Header files for modular design  
 │  
 ├── src/                # Source code for the robot  
