@@ -23,13 +23,12 @@ impl Compete for Robot {
 #[vexide::main]
 async fn main(peripherals: Peripherals) {
     let robot = Robot {};
-    let commander = GravLib::mission_control::commander::Commander::new();
     let motors = Vec::from([
         Motor::new(peripherals.port_1, Gearset::Green, Direction::Forward),
         Motor::new(peripherals.port_2, Gearset::Green, Direction::Forward),
     ]);
 
-    let mut funny = actuator::motor_group::motorGroup::new(commander, motors);
+    let mut funny = actuator::motor_group::motorGroup::new(motors);
     {
         let _ = funny.set_velocity(100.0);
     }
