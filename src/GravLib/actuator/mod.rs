@@ -1,2 +1,1 @@
-
-pub mod motorGroup;
+pub mod motor_group;
