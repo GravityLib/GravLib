@@ -66,4 +66,10 @@ impl motorGroup {
             let _ = motor.set_velocity(velocity);
         }
     }
+
+    pub fn brake(&mut self, mode: BrakeMode) {
+        for motor in self.motors.iter_mut() {
+            let _ = motor.brake(mode);
+        }
+    }
 }
