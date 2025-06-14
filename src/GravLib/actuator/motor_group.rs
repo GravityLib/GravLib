@@ -93,9 +93,14 @@ impl MotorGroup {
         handle
     }
 
-    pub fn set_voltage(&self, voltage: f64) {
+    pub fn move_voltage(&self, voltage: f64) {
         let mut guard = self.inner.lock();
-        guard.set_voltage(voltage);
+        guard.move_voltage(voltage);
+    }
+
+    pub fn move_velocity(&self, velocity_percentage: f64) {
+        let mut guard = self.inner.lock();
+        guard.move_velocity(velocity_percentage);
     }
 
     pub fn voltage(&self) -> f64 {
@@ -106,11 +111,6 @@ impl MotorGroup {
     pub fn position(&self) -> f64 {
         let guard = self.inner.lock();
         guard.position()
-    }
-
-    pub fn set_velocity(&self, velocity_percentage: f64) {
-        let mut guard = self.inner.lock();
-        guard.set_velocity(velocity_percentage);
     }
 
     pub fn brake(&self, mode: BrakeMode) {

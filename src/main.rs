@@ -75,7 +75,7 @@ async fn main(peripherals: Peripherals) {
     // }
     // sleep(Duration::from_secs(1_000)).await;
 
-    m1.set_voltage(6.0);
+    m1.move_voltage(6.0);
     sleep(Duration::from_secs(1)).await;
     m1.brake(BrakeMode::Coast);
 
