@@ -2,15 +2,26 @@ use crate::GravLib::PID;
 use crate::GravLib::actuator::motor_group::MotorGroup;
 
 use vexide::devices::smart::rotation::RotationSensor;
+use spin::Mutex;
 
-struct SmartMotor {
+/**
+ * TODO List:
+ *  [] - Test movePID system
+ *  [x] - Implement mutex for SmartMotor readings. 
+ */
+
+pub struct SmartMotor {
+    inner: &'static Mutex<inner>
+}
+
+struct Inner {
     actuator: MotorGroup,
     sensor: RotationSensor,
     controller: PID
 }
 
-impl SmartMotor {
-    pub fn new (actuator: MotorGroup, sensor: RotationSensor, controller: PID) -> Self {
+impl Inner {
+    fn new (actuator: MotorGroup, sensor: RotationSensor, controller: PID) -> Self {
         let controller = PID::new(0.0, 0.0, 0.0, 0.0);
         Self {
             controller,
@@ -19,7 +30,7 @@ impl SmartMotor {
         }
     }
 
-    pub fn movePID(&mut self, target: f64, timeout: f64, acceptable_range: f64, asyncro: bool, debug: bool) -> i32{
+    fn movePID(&mut self, target: f64, timeout: f64, acceptable_range: f64, asyncro: bool, debug: bool) -> i32{
         if asyncro {
             // Start thread
             // recall method with same parameters 
@@ -60,11 +71,43 @@ impl SmartMotor {
         return if (target - self.get_rotation()).abs() < 0.01 { 1 } else { 0 };
     }
 
-    pub fn reset(&mut self) {
+    fn reset(&mut self) {
         self.sensor.reset_position();
     }
 
-    pub fn get_rotation(&self) -> f64 {
+    fn get_rotation(&self) -> f64 {
         self.sensor.position()
+    }
+}
+
+impl SmartMotor {
+    pub fn new(actuator: MotorGroup, sensor: RotationSensor, controller: PID) -> Self {
+        let boxed = Box::new(Mutex::new(Inner::new(actuator, sensor, controller)));
+         
+        let static_mutex = Box::leak(boxed); // leak the Box to get a static reference
+
+        let handle: SmartMotor = SmartMotor { inner: static_mutex };
+
+        handle
+    }
+
+    pub fn movePID(&self, target: f64, timeout: f64, acceptable_range: f64, asyncro: bool, debug: bool) -> i32 {
+        let mut guard = self.inner.lock();
+        guard.movePID(target, timeout, acceptable_range, asyncro, debug)
+    }
+
+    pub fn reset(&self) {
+        let mut guard = self.inner.lock();
+        guard.reset();
+    }
+
+    pub fn get_rotation(&self) -> f64 {
+        let guard = self.inner.lock();
+        guard.get_rotation()
+    }
+
+    pub fn get_rotation(&self) -> f64 {
+        let guard = self.inner.lock();
+        guard.get_rotation()
     }
 }
