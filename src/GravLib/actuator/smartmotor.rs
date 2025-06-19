@@ -60,7 +60,11 @@ impl SmartMotor {
         return if (target - self.get_rotation()).abs() < 0.01 { 1 } else { 0 };
     }
 
-    pub fn reset(&mut self) {}
+    pub fn reset(&mut self) {
+        self.sensor.reset_position();
+    }
 
-    pub fn get_rotation(&self) -> f64 {}
+    pub fn get_rotation(&self) -> f64 {
+        self.sensor.position()
+    }
 }
