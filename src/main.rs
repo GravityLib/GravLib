@@ -8,8 +8,9 @@ use spin::Mutex;
 use alloc::vec::Vec;
 use alloc::boxed::Box;
 
-use vexide::{devices::adi::motor, prelude::*};
-use crate::GravLib::actuator::motor_group::MotorGroup;
+use vexide::{devices::{adi::motor, smart}, prelude::*};
+use crate::GravLib::{actuator::motor_group::{self, MotorGroup}, pid};
+use crate::GravLib::{actuator::smartmotor::{self, SmartMotor}};
 
 //------------------------------------------------------
 // 1) Change your worker to take a &'static Mutex<motorGroup>
@@ -74,6 +75,9 @@ async fn main(peripherals: Peripherals) {
     //     guard.brake(BrakeMode::Coast);
     // }
     // sleep(Duration::from_secs(1_000)).await;
+
+
+    let smart_motor = SmartMotor::new(motor_group, rotation_sensor, pid);
 
     m1.move_voltage(6.0);
     sleep(Duration::from_secs(1)).await;

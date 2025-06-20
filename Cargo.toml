@@ -15,6 +15,6 @@ compress = true
 [dependencies]
 vexide = "0.7.0"
 libm = { version = "0.2", default-features = false }
-uom = { version = "0.36.0", default-features = false, features = ["f64", "si"] }
+uom = { version = "0.37.0", default-features = false, features = ["f64", "si"] }
 embassy-sync = "0.7.0"
-spin = { version = "0.9", default-features = false, features = ["once", "mutex", "spin_mutex"] }
+spin = { version = "0.10.0", default-features = false, features = ["once", "mutex", "spin_mutex"] }
