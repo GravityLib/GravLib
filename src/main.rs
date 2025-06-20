@@ -11,74 +11,49 @@ use alloc::boxed::Box;
 use vexide::{devices::adi::motor, prelude::*};
 use crate::GravLib::actuator::motor_group::MotorGroup;
 
-//------------------------------------------------------
-// 1) Change your worker to take a &'static Mutex<motorGroup>
-//------------------------------------------------------
-// async fn location_track(g: &'static Mutex<motorGroup>) {
-//     loop {
-//         {
-//             let mut guard = g.lock();  // lock the mutex, protecting it from other task access
-//             println!(
-//                 "Voltage: {} | Position: {}",
-//                 guard.voltage(),
-//                 guard.position()
-//             );
-//             // guard dropped here, stop protection
-//         }
-//         sleep(Duration::from_millis(100)).await;
-//     }
-// }
+use crate::GravLib::drivebase::chassis::{Drivetrain, Chassis};
 
-struct Robot {}
+struct Robot {
+    chassis: Chassis,
+    controller: Controller,
+}
+
 impl Compete for Robot {
     async fn autonomous(&mut self) {
+        // your autonomous code here
         println!("Autonomous!");
     }
+
     async fn driver(&mut self) {
-        println!("Driver!");
+        // driver-control loop: reads sticks & sets voltages
+        loop {
+            self.chassis.tank(&self.controller);
+            // yield to the runtime so the controller-update task can run
+            sleep(Controller::UPDATE_INTERVAL).await;
+        }
     }
 }
 
 #[vexide::main]
 async fn main(peripherals: Peripherals) {
-    let robot = Robot {};
+    // Build two groups of three motors each
+    let left = MotorGroup::new(Vec::from([
+        Motor::new(peripherals.port_1, Gearset::Green, Direction::Reverse),
+        Motor::new(peripherals.port_2, Gearset::Green, Direction::Reverse),
+        Motor::new(peripherals.port_3, Gearset::Green, Direction::Reverse),
+    ]));
 
+    let right = MotorGroup::new(Vec::from([
+        Motor::new(peripherals.port_4, Gearset::Green, Direction::Forward),
+        Motor::new(peripherals.port_5, Gearset::Green, Direction::Forward),
+        Motor::new(peripherals.port_6, Gearset::Green, Direction::Forward),
+    ]));
 
-    //------------------------------------------------------
-    // SECTION 1: ROBOT CONFIGURATION
-    //------------------------------------------------------
+    // Wrap them in your chassis
+    let chassis = Chassis::new(left, right, 320.0, 100.0);
+    let controller = peripherals.primary_controller;
 
-    let mut m1 = MotorGroup::new(
-        Vec::from([
-            Motor::new(peripherals.port_1, Gearset::Green, Direction::Forward),
-            Motor::new(peripherals.port_2, Gearset::Green, Direction::Reverse),
-        ])
-    );
-
-    //------------------------------------------------------
-
-    // {
-    //     let mut guard = static_group.lock(); // lock the mutex to access the motor group
-    //     guard.set_voltage(-6.0);
-    // }
-    // sleep(Duration::from_secs(1)).await;
-
-    // {
-    //     let mut guard = static_group.lock();
-    //     guard.set_voltage(6.0);
-    // }
-    // sleep(Duration::from_secs(1)).await;
-
-    // {
-    //     let mut guard = static_group.lock();
-    //     guard.brake(BrakeMode::Coast);
-    // }
-    // sleep(Duration::from_secs(1_000)).await;
-
-    m1.move_voltage(6.0);
-    sleep(Duration::from_secs(1)).await;
-    m1.brake(BrakeMode::Coast);
-
-    // 5) Finally run your Robot
+    let mut robot = Robot { chassis, controller };
+    // This hands off control to vexide’s scheduler (autonomous → driver)
     robot.compete().await;
 }
