@@ -45,8 +45,7 @@ impl Chassis {
         Chassis { drivetrain }
     }
 
-    /// A simple “tank” drive: map left stick Y to left motors, right stick Y to right motors.
-    pub fn tank(&mut self, controller: &Controller) {
+    pub fn tank_drive(&mut self, controller: &Controller) {
         // Read the latest controller state (unwrap_or_default avoids panicking on first call)
         let state = controller.state().unwrap_or_default();
 
@@ -61,5 +60,46 @@ impl Chassis {
         self.drivetrain
             .right_motors
             .move_voltage(right_signal.into());
+    }
+    
+    pub fn split_arcade_drive(&mut self, controller: &Controller) {
+        let state = controller.state().unwrap_or_default();
+        let forward = state.left_stick.y_raw() as f64;
+        let turn = state.right_stick.x_raw() as f64;
+
+        let left_signal = (forward + turn).clamp(-127.0, 127.0);
+        let right_signal = (forward - turn).clamp(-127.0, 127.0);
+
+        self.drivetrain
+            .left_motors
+            .move_voltage(left_signal as f64);
+        self.drivetrain
+            .right_motors
+            .move_voltage(right_signal as f64);
+    }
+
+    pub fn curvature_drive(&mut self, controller: &Controller) {
+        let state = controller.state().unwrap_or_default();
+        let forward = state.left_stick.y_raw() as f64 / 127.0;
+        let curvature = state.right_stick.x_raw() as f64 / 127.0;
+
+        let scaled_turn = forward.abs() * curvature;
+        let left_output = (forward + scaled_turn) * 127.0;
+        let right_output = (forward - scaled_turn) * 127.0;
+
+        self.drivetrain.left_motors.move_voltage(left_output.clamp(-127.0, 127.0));
+        self.drivetrain.right_motors.move_voltage(right_output.clamp(-127.0, 127.0));
+    }
+
+    pub fn single_arcade_drive(&mut self, controller: &Controller) {
+        let state = controller.state().unwrap_or_default();
+        let forward = state.left_stick.y_raw() as f64;
+        let turn = state.left_stick.x_raw() as f64;
+
+        let left_signal = (forward + turn).clamp(-127.0, 127.0);
+        let right_signal = (forward - turn).clamp(-127.0, 127.0);
+
+        self.drivetrain.left_motors.move_voltage(left_signal as f64);
+        self.drivetrain.right_motors.move_voltage((right_signal as f64).into());
     }
 }

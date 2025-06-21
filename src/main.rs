@@ -27,7 +27,7 @@ impl Compete for Robot {
     async fn driver(&mut self) {
         // driver-control loop: reads sticks & sets voltages
         loop {
-            self.chassis.tank(&self.controller);
+            self.chassis.tank_drive(&self.controller);
             // yield to the runtime so the controller-update task can run
             sleep(Controller::UPDATE_INTERVAL).await;
         }
