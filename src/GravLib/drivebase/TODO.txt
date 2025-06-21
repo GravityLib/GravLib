@@ -1,0 +1,31 @@
+Here are all the functions from Lemlib. 
+
+[~] lemlib::Chassis::Chassis(...)
+[√] void lemlib::Chassis::calibrate(bool calibrateIMU = true)
+[√] void lemlib::Chassis::setPose(float x, float y, float theta, bool radians = false)
+[√] void lemlib::Chassis::setPose(lemlib::Pose pose, bool radians = false)
+[√] lemlib::Pose lemlib::Chassis::getPose(bool radians = false, bool standardPos = false)
+[] void lemlib::Chassis::waitUntil(float dist)
+[] void lemlib::Chassis::waitUntilDone()
+[√] void lemlib::Chassis::setBrakeMode(pros::motor_brake_mode_e mode)
+[~] void lemlib::Chassis::turnToPoint(float x, float y, int timeout, lemlib::TurnToPointParams params = {}, bool async = true)
+[~] void lemlib::Chassis::turnToHeading(float theta, int timeout, lemlib::TurnToHeadingParams params = {}, bool async = true)
+[~] void lemlib::Chassis::swingToHeading(float theta, lemlib::DriveSide lockedSide, int timeout, lemlib::SwingToHeadingParams params = {}, bool async = true)
+[~] void lemlib::Chassis::swingToPoint(float x, float y, lemlib::DriveSide lockedSide, int timeout, lemlib::SwingToPointParams params = {}, bool async = true)
+[~] void lemlib::Chassis::moveToPose(float x, float y, float theta, int timeout, lemlib::MoveToPoseParams params = {}, bool async = true)
+[~] void lemlib::Chassis::moveToPoint(float x, float y, int timeout, lemlib::MoveToPointParams params = {}, bool async = true)
+[~] void lemlib::Chassis::follow(const lemlib::asset& path, float lookahead, int timeout, bool forwards = true, bool async = true)
+~~[] void lemlib::Chassis::tank(int left, int right, bool disableDriveCurve = false)~~
+~~[] void lemlib::Chassis::arcade(int throttle, int turn, bool disableDriveCurve = false, float desaturateBias = 0.5)~~
+~~[] void lemlib::Chassis::curvature(int throttle, int turn, bool disableDriveCurve = false)~~
+[√?] void lemlib::Chassis::variableCurvature(int throttle, int turn, double slowFactor, bool disableDriveCurve)
+[] void lemlib::Chassis::cancelMotion()
+[] void lemlib::Chassis::cancelAllMotions()
+[] bool lemlib::Chassis::isInMotion() const
+[] void lemlib::Chassis::resetLocalPosition()
+[~] Odometry features for chassis
+
+Please tick ('√') which ones do you think is the best for our codebase and which ones are not necessarily needed
+Please strikethrough('~~xyz~~') which ones have already been implemented
+Please tilde ('~') which ones are work in progress
+Feel free to add any other functions or features you would like to see here as well. 
