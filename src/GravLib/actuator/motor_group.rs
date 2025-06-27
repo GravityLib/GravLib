@@ -23,6 +23,7 @@ impl Inner{
         Self { motors }
     }
 
+    // input range: -12.0 to 12.0
     fn move_voltage(&mut self, voltage: f64) {
         for motor in &mut self.motors {
             let _ = motor.set_voltage(voltage); 
@@ -93,6 +94,7 @@ impl MotorGroup {
         handle
     }
 
+    // 
     pub fn move_voltage(&self, voltage: f64) {
         let mut guard = self.inner.lock();
         guard.move_voltage(voltage);
