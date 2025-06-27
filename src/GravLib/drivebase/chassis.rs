@@ -1,7 +1,12 @@
-// src/GravLib/drivebase/chassis.rs
-
 use crate::GravLib::actuator::motor_group::MotorGroup;
 use vexide::devices::controller::Controller;
+use vexide::io::println;
+
+
+/**
+ * TODO: 
+ * [] - Add
+ */
 
 /// A simple drivetrain which owns two MotorGroups.
 pub struct Drivetrain {
@@ -50,8 +55,12 @@ impl Chassis {
         let state = controller.state().unwrap_or_default();
 
         // Raw stick values (–max..+max) which convert into your Voltage type
-        let left_signal  = state.left_stick.y_raw();
-        let right_signal = state.right_stick.y_raw();
+        let mut left_signal  = state.left_stick.y_raw() as f64;
+        let mut right_signal = state.right_stick.y_raw() as f64;
+        
+        // conversion from -127, 127 input to -12, 12 voltage input
+        left_signal = left_signal as f64 * (12.0/127.0);
+        right_signal = right_signal as f64 * (12.0/127.0);
 
         // Send those voltages to the motors
         self.drivetrain
@@ -61,45 +70,53 @@ impl Chassis {
             .right_motors
             .move_voltage(right_signal.into());
     }
-    
-    pub fn split_arcade_drive(&mut self, controller: &Controller) {
-        let state = controller.state().unwrap_or_default();
-        let forward = state.left_stick.y_raw() as f64;
-        let turn = state.right_stick.x_raw() as f64;
 
-        let left_signal = (forward + turn).clamp(-127.0, 127.0);
-        let right_signal = (forward - turn).clamp(-127.0, 127.0);
+    pub fn split_arcade_drive(&mut self, controller: &Controller) {
+        // Read the latest controller state (unwrap_or_default avoids panicking on first call)
+        let state = controller.state().unwrap_or_default();
+
+        // Raw stick values (–max..+max) which convert into your Voltage type
+        let mut left_signal  = state.left_stick.y_raw() as f64;
+        let mut right_signal = state.right_stick.x_raw() as f64;
+        
+        // conversion from -127, 127 input to -12, 12 voltage input
+        left_signal = left_signal as f64 * (12.0/127.0);
+        right_signal = right_signal as f64 * (12.0/127.0);
 
         self.drivetrain
             .left_motors
-            .move_voltage(left_signal as f64);
+            .move_voltage(left_signal.into());
         self.drivetrain
             .right_motors
-            .move_voltage(right_signal as f64);
+            .move_voltage(right_signal.into());
     }
 
-    pub fn curvature_drive(&mut self, controller: &Controller) {
-        let state = controller.state().unwrap_or_default();
-        let forward = state.left_stick.y_raw() as f64 / 127.0;
-        let curvature = state.right_stick.x_raw() as f64 / 127.0;
+    // pub fn curvature_drive(&mut self, controller: &Controller) {
+    //     let state = controller.state().unwrap_or_default();
+    //     let forward = state.left_stick.y_raw() as f64 / 127.0;
+    //     let curvature = state.right_stick.x_raw() as f64 / 127.0;
 
-        let scaled_turn = forward.abs() * curvature;
-        let left_output = (forward + scaled_turn) * 127.0;
-        let right_output = (forward - scaled_turn) * 127.0;
+    //     let scaled_turn = forward.abs() * curvature;
+    //     let left_output = (forward + scaled_turn) * 127.0;
+    //     let right_output = (forward - scaled_turn) * 127.0;
 
-        self.drivetrain.left_motors.move_voltage(left_output.clamp(-127.0, 127.0));
-        self.drivetrain.right_motors.move_voltage(right_output.clamp(-127.0, 127.0));
-    }
+    //     self.drivetrain.left_motors.move_voltage(left_output.clamp(-127.0, 127.0));
+    //     self.drivetrain.right_motors.move_voltage(right_output.clamp(-127.0, 127.0));
+    // }
 
     pub fn single_arcade_drive(&mut self, controller: &Controller) {
+        // Read the latest controller state (unwrap_or_default avoids panicking on first call)
         let state = controller.state().unwrap_or_default();
-        let forward = state.left_stick.y_raw() as f64;
-        let turn = state.left_stick.x_raw() as f64;
 
-        let left_signal = (forward + turn).clamp(-127.0, 127.0);
-        let right_signal = (forward - turn).clamp(-127.0, 127.0);
+        // Raw stick values (–max..+max) which convert into your Voltage type
+        let mut left_signal  = state.left_stick.y_raw() as f64;
+        let mut right_signal = state.left_stick.x_raw() as f64;
+        
+        // conversion from -127, 127 input to -12, 12 voltage input
+        left_signal = left_signal as f64 * (12.0/127.0);
+        right_signal = right_signal as f64 * (12.0/127.0);
 
-        self.drivetrain.left_motors.move_voltage(left_signal as f64);
-        self.drivetrain.right_motors.move_voltage((right_signal as f64).into());
+        self.drivetrain.left_motors.move_voltage(left_signal.into());
+        self.drivetrain.right_motors.move_voltage(right_signal.into());
     }
 }
