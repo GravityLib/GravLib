@@ -1,13 +1,13 @@
 use vexide::time::Instant;
 use core::time::Duration;
 
-struct Gains {
+pub struct Gains {
     kP: f32,
     kI: f32,
     kD: f32,
 }
 
-struct PID {
+pub struct PID {
     m_gains: Gains,
 
     m_signFlipReset: bool,
@@ -20,7 +20,7 @@ struct PID {
 }
 
 impl PID {
-    fn new(kP: f32, kI: f32, kD: f32, windupRange: f32, signFlipReset: bool) -> Self {
+    pub fn new(kP: f32, kI: f32, kD: f32, windupRange: f32, signFlipReset: bool) -> Self {
         Self {
             m_gains: Gains {
                 kP,
@@ -59,7 +59,7 @@ impl PID {
     //     self.m_windupRange
     // }
 
-    fn update(&mut self, error: f32) -> f32 {
+    pub fn update(&mut self, error: f32) -> f32 {
         // Finding time delta
         let now = Instant::now();
 
@@ -101,7 +101,7 @@ impl PID {
             + derivative * self.m_gains.kD
     }   
 
-    fn reset(&mut self) {
+    pub fn reset(&mut self) {
         self.m_previousError = 0.0;
         self.m_integral = 0.0;
     }
