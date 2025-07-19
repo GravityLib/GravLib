@@ -23,6 +23,24 @@ If you decide to use our code, please consider **starring our project** (and lem
 ## License
 This project is licensed under the MIT license. Check [LICENSE](https://github.com/1831-Code-Community/1831-Common-Codebase/blob/main/LICENSE) for more details.
 
+## V0.1 Contents
+
+- [x] Driver Control 
+    - [x] Tank
+    - [x] Split Arcade
+    - [x] Single Arcade
+- [x] MotorGroup Controls
+- [ ] Odometry & Motion System
+    - [ ] Odometry Sensor Config
+    - [ ] Path Generation & PP
+    - [ ] Movement methods
+        - [ ] MoveToPose
+        - [ ] MoveToPoint
+        - [ ] TurnToHeading
+        - [ ] TurnToPoint
+    - [ ] Motion Chaining
+     
+          
 ## Table of Contents  
 
 - [About Us](#about-us)  
