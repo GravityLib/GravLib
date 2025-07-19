@@ -53,6 +53,7 @@ async fn main(peripherals: Peripherals) {
 
     // Wrap them in your chassis
     let chassis = Chassis::new(left, right, 320.0, 100.0);
+    
     let controller = peripherals.primary_controller;
 
     let mut robot = Robot { chassis, controller };
