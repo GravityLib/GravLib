@@ -2,25 +2,25 @@ use vexide::time::Instant;
 use core::time::Duration;
 
 pub struct Gains {
-    kP: f32,
-    kI: f32,
-    kD: f32,
+    kP: f64,
+    kI: f64,
+    kD: f64,
 }
 
 pub struct PID {
     m_gains: Gains,
 
     m_signFlipReset: bool,
-    m_windupRange: f32,
+    m_windupRange: f64,
 
-    m_previousError: f32,
-    m_integral: f32,
+    m_previousError: f64,
+    m_integral: f64,
 
     m_prevTime: Option<Instant>
 }
 
 impl PID {
-    pub fn new(kP: f32, kI: f32, kD: f32, windupRange: f32, signFlipReset: bool) -> Self {
+    pub fn new(kP: f64, kI: f64, kD: f64, windupRange: f64, signFlipReset: bool) -> Self {
         Self {
             m_gains: Gains {
                 kP,
@@ -51,15 +51,15 @@ impl PID {
     //     self.signFlipReset = signFlipReset;
     // }
 
-    // fn setWindupRange(&mut self, windupRange: f32) {
+    // fn setWindupRange(&mut self, windupRange: f64) {
     //     self.m_windupRange = windupRange;
     // }
 
-    // fn getWindupRange(&self) -> f32 {
+    // fn getWindupRange(&self) -> f64 {
     //     self.m_windupRange
     // }
 
-    pub fn update(&mut self, error: f32) -> f32 {
+    pub fn update(&mut self, error: f64) -> f64 {
         // Finding time delta
         let now = Instant::now();
 
@@ -72,7 +72,7 @@ impl PID {
 
         self.m_prevTime = Some(now);
 
-        let dt_secs = dt.as_secs_f32();
+        let dt_secs = dt.as_secs_f64();
 
         let derivative = if dt_secs > 0.0 {
             (error - self.m_previousError) / dt_secs

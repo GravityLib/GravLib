@@ -34,23 +34,23 @@ impl Chassis {
 #[derive(Debug, Clone, Copy)]
 pub struct ControllerSettings {
     /// Proportional gain
-    pub k_p: f32,
+    pub k_p: f64,
     /// Integral gain
-    pub k_i: f32,
+    pub k_i: f64,
     /// Derivative gain
-    pub k_d: f32,
+    pub k_d: f64,
     /// Anti‐windup range: if error magnitude ≤ this, integral term is reset
-    pub windup_range: f32,
+    pub windup_range: f64,
     /// “Small” error threshold: if error magnitude ≤ this, controller may exit
-    pub small_error: f32,
+    pub small_error: f64,
     /// Time (ms) the error must remain within `small_error` before exit
-    pub small_error_timeout: f32,
+    pub small_error_timeout: f64,
     /// “Large” error threshold: similar exit logic but for a larger bound
-    pub large_error: f32,
+    pub large_error: f64,
     /// Time (ms) the error must remain within `large_error` before exit
-    pub large_error_timeout: f32,
+    pub large_error_timeout: f64,
     /// Maximum change per control step
-    pub slew: f32,
+    pub slew: f64,
 }
 
 impl ControllerSettings {
@@ -69,15 +69,15 @@ impl ControllerSettings {
     /// - `large_error_timeout`: large‐error timeout (ms)  
     /// - `slew`: maximum acceleration (slew rate)  
     pub fn new(
-        k_p:              f32,
-        k_i:              f32,
-        k_d:              f32,
-        windup_range:     f32,
-        small_error:      f32,
-        small_error_timeout: f32,
-        large_error:      f32,
-        large_error_timeout: f32,
-        slew:             f32,
+        k_p:              f64,
+        k_i:              f64,
+        k_d:              f64,
+        windup_range:     f64,
+        small_error:      f64,
+        small_error_timeout: f64,
+        large_error:      f64,
+        large_error_timeout: f64,
+        slew:             f64,
     ) -> Self {
         Self {
             k_p,

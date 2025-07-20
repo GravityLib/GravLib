@@ -8,7 +8,7 @@ use core::time::Duration;
 use spin::Mutex;
 use vexide::prelude::{BrakeMode, Gearset, Motor};
 use vexide::task;
-use libm::roundf;
+use libm;
 
 pub struct MotorGroup {
     inner: &'static Mutex<Inner>,
@@ -44,10 +44,10 @@ impl Inner{
 
             // Convert percentages to rpm
             let velocity_raw = 
-                (velocity_percentage as f32 / 100.0)
-                * (max_rpm as f32);
+                (velocity_percentage / 100.0)
+                * (max_rpm as f64);
 
-            let velocity = roundf(velocity_raw) as i32;
+            let velocity = libm::round(velocity_raw) as i32;
             let _ = motor.set_velocity(velocity);
         }
     }
@@ -189,10 +189,10 @@ impl MotorGroup {
 
 //             // Convert percentages to rpm
 //             let velocity_raw = 
-//                 (velocity_percentage as f32 / 100.0)
-//                 * (max_rpm as f32);
+//                 (velocity_percentage / 100.0)
+//                 * (max_rpm as f64);
 
-//             let velocity = roundf(velocity_raw) as i32;
+//             let velocity = libm::round(velocity_raw) as i32;
 //             let _ = motor.set_velocity(velocity);
 //         }
 //     }
