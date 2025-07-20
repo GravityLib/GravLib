@@ -17,21 +17,4 @@ vexide = "0.7.0"
 libm = { version = "0.2", default-features = false }
 uom = { version = "0.36.0", default-features = false, features = ["f64", "si"] }
 embassy-sync = "0.7.0"
-spin = { version = "0.9", default-features = false, features = ["once", "mutex", "spin_mutex", "rwlock"] }
-once_cell = { version = "1.19", default-features = false, features = ["critical-section"] }
-
-[dev-dependencies]
-approx = "0.5"
-mockall = "0.12"
-tokio-test = "0.4"
-
-# Performance optimization profiles
-[profile.release]
-lto = true              # Link-time optimization for better performance
-codegen-units = 1       # Better optimization but slower compilation
-panic = "abort"         # Smaller binary size
-opt-level = 3           # Maximum optimization
-
-[profile.dev]
-opt-level = 1           # Some optimization for development builds
-debug = true            # Keep debug info for development
+spin = { version = "0.9", default-features = false, features = ["once", "mutex", "spin_mutex"] }
