@@ -12,9 +12,9 @@
 
 ![Build](https://img.shields.io/github/actions/workflow/status/GravityLib/GravLib/build.yml?style=for-the-badge)
 
-Welcome Adventurer! This repository is a merged effort between programmers of active V5RC teams **1831E and 1831A** in the "high stakes" season. 
+Welcome Adventurer! This repository is a merged effort between programmers of active V5RC teams **1831E and 1831A** in the "Push Back" 2025-26 season. 
 
-With this project, we are aiming to extend upon the existing LemLib project by @SizzinSeal and its contributors, optimising it for the "high stakes" season. 
+With this project, we are aiming to extend upon the existing LemLib project by @SizzinSeal and its contributors, optimising it for the "Push Back" season. 
 
 If you decide to use our code, please consider **starring our project** (and lemlib) to support us!
 
@@ -38,6 +38,8 @@ This project is licensed under the MIT license. Check [LICENSE](https://github.c
         - [ ] MoveToPoint
         - [ ] TurnToHeading
         - [ ] TurnToPoint
+        - [ ] SwingToHeading
+        - [ ] SwingToPoint
     - [ ] Motion Chaining
      
           
@@ -56,7 +58,7 @@ This project is licensed under the MIT license. Check [LICENSE](https://github.c
 
 **Team 1831E** is a currently active V5RC **HS** team based in **The King's School, Paramatta, Sydney Australia** competing in the VEX Robotics Competition 2024-2025 "High Stakes". 
 
-**Team 1831A** is a currently active V5RC **MS** team based in the same school.
+**Team 1831A** is a currently active V5RC **HS** team based in the same school.
 
 <!--
 NOTE - Commented out
@@ -92,11 +94,11 @@ Before running the code, ensure you have the following installed:
 
 1. Clone the repository to your local machine:  
    ```bash  
-   git clone https://github.com/LycoKodo/1831E-Robotics.git  
+   git clone https://github.com/GravityLib/GravLib.git
    ```  
 2. Open the project in VScode
 
-3. Build and deploy the code to the robot. with "pros mu"
+3. Build and deploy the code to the robot. with "cargo v5 build"
 
 ---
 
@@ -144,5 +146,9 @@ Haoran Fang (venus-beetroot) - Programmer of 1831A
 
 Carlos Zhang (blatantac) - Programmer of 1831N
 
+<!--
+Not contributing atm :(
+
 Sky Fan (Skiiboi) - Programmer/Project Manager of 1831D
+-->
 
