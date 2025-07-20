@@ -64,6 +64,30 @@ impl Pose {
         Pose { x, y, theta }
     }
 
+    pub fn x(&self) -> f64 {
+        self.x
+    }
+
+    pub fn y(&self) -> f64 {
+        self.y
+    }
+
+    pub fn theta(&self) -> f64 {
+        self.theta
+    }
+
+    pub fn set_x(&mut self, x: f64) {
+        self.x = x;
+    }
+
+    pub fn set_y(&mut self, y: f64) {
+        self.y = y;
+    }
+
+    pub fn set_theta(&mut self, theta: f64) {
+        self.theta = theta;
+    }
+
     pub fn linear_interpolate(&self, other: Pose, value: f64) -> Pose {
         Pose {
             x: self.x + (other.x - self.x) * value,
