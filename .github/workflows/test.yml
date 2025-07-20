@@ -1,0 +1,117 @@
+name: Test Automation
+
+on:
+  push:
+    branches: [ main, develop, "gravlib-*" ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+        components: rustfmt, clippy
+    
+    - name: Install additional tools
+      run: |
+        cargo install just
+        cargo install cargo-tarpaulin
+    
+    - name: Cache cargo registry
+      uses: actions/cache@v4
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-registry-
+    
+    - name: Cache cargo build
+      uses: actions/cache@v4
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-build-
+    
+    - name: Check formatting
+      run: just fmt --check
+      continue-on-error: true
+    
+    - name: Run clippy
+      run: just lint
+      continue-on-error: true
+    
+    - name: Check compilation
+      run: just check
+    
+    - name: Run unit tests
+      run: just test-unit
+    
+    - name: Run integration tests
+      run: just test-integration
+    
+    - name: Run PID tests
+      run: just test-pid
+    
+    - name: Generate coverage report
+      run: just coverage
+      continue-on-error: true
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      if: success()
+      with:
+        file: ./target/coverage/cobertura.xml
+        fail_ci_if_error: false
+
+  cross-compile:
+    name: Cross Compilation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Install VEX V5 target
+      run: rustup target add armv7a-unknown-linux-gnueabihf
+    
+    - name: Check cross compilation
+      run: cargo check --target armv7a-unknown-linux-gnueabihf
+      continue-on-error: true
+
+  performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Install just
+      run: cargo install just
+    
+    - name: Run benchmarks
+      run: just bench
+      continue-on-error: true
+    
+    - name: Test release build
+      run: just test-release

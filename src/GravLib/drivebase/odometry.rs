@@ -1,10 +1,17 @@
 use crate::GravLib::drivebase::{Pose, Drivetrain};
 use vexide::devices::smart::imu::InertialSensor;
-use spin::Mutex;
+use spin::RwLock;
 use core::f64::consts::PI;
 use libm::{sin, cos};
 
 use super::chassis::TrackingWheel;
+
+// Pre-calculated constants for better performance
+const PI_DIV_180: f64 = PI / 180.0;
+const INV_180_DIV_PI: f64 = 180.0 / PI;
+const EMA_ALPHA: f64 = 0.95;
+const EMA_BETA: f64 = 1.0 - EMA_ALPHA;
+const DELTA_TIME: f64 = 0.01; // 10ms loop time
 
 pub struct OdomSensors {
     pub vertical1: Option<TrackingWheel>,
@@ -32,8 +39,8 @@ impl OdomSensors {
     }
 }
 
-/// Global odometry state
-static ODOMETRY_STATE: Mutex<Option<OdometryState>> = Mutex::new(None);
+/// Global odometry state - using RwLock for better concurrent read access
+static ODOMETRY_STATE: RwLock<Option<OdometryState>> = RwLock::new(None);
 
 struct OdometryState {
     sensors: OdomSensors,
@@ -71,30 +78,52 @@ impl OdometryState {
     }
 }
 
-/// Exponential moving average function
-fn ema(input: f64, prev_output: f64, alpha: f64) -> f64 {
-    alpha * input + (1.0 - alpha) * prev_output
+/// Optimized exponential moving average function with pre-calculated constants
+#[inline(always)]
+fn ema(input: f64, prev_output: f64) -> f64 {
+    EMA_ALPHA * input + EMA_BETA * prev_output
 }
 
-/// Utility function to convert degrees to radians  
+/// Optimized utility function to convert degrees to radians using pre-calculated constant
+#[inline(always)]
 fn deg_to_rad(deg: f64) -> f64 {
-    deg * PI / 180.0
+    deg * PI_DIV_180
 }
 
-/// Utility function to convert radians to degrees
+/// Optimized utility function to convert radians to degrees using pre-calculated constant
+#[inline(always)]
 fn rad_to_deg(rad: f64) -> f64 {
-    rad * 180.0 / PI
+    rad * INV_180_DIV_PI
 }
 
 /// Set the sensors to be used for odometry
 pub fn set_sensors(sensors: OdomSensors, drivetrain: Drivetrain) {
-    let mut state_lock = ODOMETRY_STATE.lock();
+    let mut state_lock = ODOMETRY_STATE.write();
     *state_lock = Some(OdometryState::new(sensors, drivetrain));
 }
 
-/// Get the pose of the robot  
+/// Set the sensors with just the drivetrain parameters (for task manager)
+pub fn set_sensors_with_params(sensors: OdomSensors, track_width: f64, wheel_diameter: f64) {
+    // Create a dummy drivetrain with just the parameters needed for odometry calculations
+    // The motor groups won't be used in odometry calculations, only the geometric parameters
+    use alloc::vec::Vec;
+    use vexide::prelude::{Motor, Gearset, Direction};
+    
+    // Create dummy motor groups - these won't actually be used for odometry calculations
+    // This is a workaround until we refactor the odometry system to not need the full Drivetrain
+    let dummy_motors = Vec::new();
+    let left_group = crate::GravLib::actuator::MotorGroup::new(dummy_motors);
+    let right_group = crate::GravLib::actuator::MotorGroup::new(Vec::new());
+    
+    let drivetrain = Drivetrain::new(left_group, right_group, track_width, wheel_diameter);
+    
+    let mut state_lock = ODOMETRY_STATE.write();
+    *state_lock = Some(OdometryState::new(sensors, drivetrain));
+}
+
+/// Get the pose of the robot with optimized read access
 pub fn get_pose(radians: bool) -> Pose {
-    let state_lock = ODOMETRY_STATE.lock();
+    let state_lock = ODOMETRY_STATE.read();
     match state_lock.as_ref() {
         Some(state) => {
             if radians {
@@ -109,7 +138,7 @@ pub fn get_pose(radians: bool) -> Pose {
 
 /// Set the pose of the robot
 pub fn set_pose(pose: Pose, radians: bool) {
-    let mut state_lock = ODOMETRY_STATE.lock();
+    let mut state_lock = ODOMETRY_STATE.write();
     if let Some(state) = state_lock.as_mut() {
         state.pose = if radians {
             pose
@@ -121,7 +150,7 @@ pub fn set_pose(pose: Pose, radians: bool) {
 
 /// Get the speed of the robot
 pub fn get_speed(radians: bool) -> Pose {
-    let state_lock = ODOMETRY_STATE.lock();
+    let state_lock = ODOMETRY_STATE.read();
     match state_lock.as_ref() {
         Some(state) => {
             if radians {
@@ -136,7 +165,7 @@ pub fn get_speed(radians: bool) -> Pose {
 
 /// Get the local speed of the robot
 pub fn get_local_speed(radians: bool) -> Pose {
-    let state_lock = ODOMETRY_STATE.lock();
+    let state_lock = ODOMETRY_STATE.read();
     match state_lock.as_ref() {
         Some(state) => {
             if radians {
@@ -175,7 +204,7 @@ pub fn estimate_pose(time: f64, radians: bool) -> Pose {
 
 /// Update the pose of the robot - core odometry calculation
 pub fn update() {
-    let mut state_lock = ODOMETRY_STATE.lock();
+    let mut state_lock = ODOMETRY_STATE.write();
     let state = match state_lock.as_mut() {
         Some(state) => state,
         None => return, // No odometry configured
@@ -286,16 +315,16 @@ pub fn update() {
     state.pose.set_y(state.pose.y() + local_x * sin(avg_heading));
     state.pose.set_theta(heading);
     
-    // Calculate speed (10ms loop time assumed)
-    let dt = 0.01;
-    state.speed.set_x(ema((state.pose.x() - prev_pose.x()) / dt, state.speed.x(), 0.95));
-    state.speed.set_y(ema((state.pose.y() - prev_pose.y()) / dt, state.speed.y(), 0.95));
-    state.speed.set_theta(ema((state.pose.theta() - prev_pose.theta()) / dt, state.speed.theta(), 0.95));
+    // Calculate speed using pre-calculated constants for better performance
+    let inv_dt = 1.0 / DELTA_TIME; // More efficient than division in loop
+    state.speed.set_x(ema((state.pose.x() - prev_pose.x()) * inv_dt, state.speed.x()));
+    state.speed.set_y(ema((state.pose.y() - prev_pose.y()) * inv_dt, state.speed.y()));
+    state.speed.set_theta(ema((state.pose.theta() - prev_pose.theta()) * inv_dt, state.speed.theta()));
     
     // Calculate local speed
-    state.local_speed.set_x(ema(local_x / dt, state.local_speed.x(), 0.95));
-    state.local_speed.set_y(ema(local_y / dt, state.local_speed.y(), 0.95));
-    state.local_speed.set_theta(ema(delta_heading / dt, state.local_speed.theta(), 0.95));
+    state.local_speed.set_x(ema(local_x * inv_dt, state.local_speed.x()));
+    state.local_speed.set_y(ema(local_y * inv_dt, state.local_speed.y()));
+    state.local_speed.set_theta(ema(delta_heading * inv_dt, state.local_speed.theta()));
 }
 
 /// Initialize odometry system (would start background task in full implementation)
