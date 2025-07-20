@@ -102,9 +102,3 @@ impl TrackingWheelInner {
     }
 
 }
-
-struct Pose {
-    x: f64,
-    y: f64,
-    theta: f64, // orientation in radians
-}
