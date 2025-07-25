@@ -1,8 +1,18 @@
 use vexide::{
     devices::smart::RotationSensor,
+    devices::smart::InertialSensor,
 };
 
 use core::f64::consts::PI;
+use alloc::{sync::Arc, vec::Vec};
+use spin::Mutex;
+
+pub struct Sensors {
+    pub horizontal_wheels: Vec<Arc<Mutex<TrackingWheel>>>,
+    pub vertical_wheels: Vec<Arc<Mutex<TrackingWheel>>>,
+    pub imu: Arc<Mutex<InertialSensor>>,
+}
+
 pub struct TrackingWheel {
     rotation: RotationSensor,
     diameter: f64,

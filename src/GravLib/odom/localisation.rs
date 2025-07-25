@@ -12,7 +12,7 @@ use uom::{si::f64::Angle, ConstZero};
 
 use libm;
 
-use crate::GravLib::odom::sensors::TrackingWheel;
+use crate::GravLib::odom::sensors::{TrackingWheel, Sensors};
 
 pub struct Pose {
     x: f64,
@@ -21,7 +21,7 @@ pub struct Pose {
 }
 
 pub struct Localisation {
-    sensors: Sensors,
+    sensors: Arc<Mutex<Sensors>>,
     m_pose: Arc<Mutex<Pose>>,
 }
 
@@ -44,6 +44,17 @@ fn calculate_wheel_heading(wheels: &Vec<Arc<Mutex<TrackingWheel>>>) -> f64 {
 
     // calculate heading
     ((distance1 - distance2) / (offset1 - offset2)) + 90.0
+}
+
+fn find_lateral_delta(sensors: Vec<Arc<Mutex<TrackingWheel>>>) -> f64 {
+    for i in 0..sensors.len() {
+        let sensor = sensors[i].lock();
+        let data = sensor.get_distance_travelled();
+        // TODO - Handle fault sensor.
+        return data;
+    }
+    // Return 0.0 if no data was found
+    0.0
 }
 
 /// Compute the robot’s local (Δx, Δy) given wheel deltas & offsets and a rotation Δθ.
@@ -85,17 +96,17 @@ impl Localisation {
             let delta_time = time_now.duration_since(prev_time);
 
             // 1. Get tracking wheel deltas
-            let horizontal_delta = self.sensors.horizontal_wheels.lock().get_distance_travelled();
-            let vertical_delta = self.sensors.vertical_wheels.lock().get_distance_travelled();
+            let horizontal_delta = find_lateral_delta(self.sensors.lock().horizontal_wheels);
+            let vertical_delta = find_lateral_delta(self.sensors.lock().vertical_wheels);
             
             // 2. calculate headings.
                 // Option 1: IMU
                 // Option 2: Horizontal Wheel
                 // Option 3: Vertical Wheel
                 // Option 4: Drivetrain
-            let theta_opt: Option<f64> = self.sensors.imu.lock().heading().unwrap()
-                .or_else(|| calculate_wheel_heading(&self.sensors.horizontal_wheels.lock()))
-                .or_else(|| calculate_wheel_heading(&self.sensors.vertical_wheels.lock()));
+            let theta_opt: Option<f64> = self.sensors.lock().imu.lock().heading().unwrap()
+                .or_else(|| calculate_wheel_heading(&self.sensors.lock().horizontal_wheels))
+                .or_else(|| calculate_wheel_heading(&self.sensors.lock().vertical_wheels));
 
             let theta = theta_opt.unwrap_or(0.0);
 
@@ -104,8 +115,8 @@ impl Localisation {
             // 3. Calculate change in local coordinates
             let delta_theta = theta - self.m_pose.lock().theta;
 
-            let vertical_offset = self.sensors.vertical_wheels.lock().get_offset();
-            let horizontal_offset = self.sensors.horizontal_wheels.lock().get_offset();
+            let vertical_offset = self.sensors.lock().vertical_wheels.lock().get_offset();
+            let horizontal_offset = self.sensors.lock().horizontal_wheels.lock().get_offset();
 
             let (delta_x, delta_y) = compute_local_position(
                 delta_theta,
