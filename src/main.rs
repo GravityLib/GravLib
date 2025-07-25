@@ -62,14 +62,17 @@ impl Compete for Robot {
 
     async fn driver(&mut self) {
         // driver-control loop: reads sticks & sets voltages
+        // loop {
+        //     // Get current robot position from localization
+        //     let pose = self.localisation.lock();
+        //     let (x, y, theta) = pose.lock().get_position();
+            
+        //     println!("Robot Position - X: {:.4}, Y: {:.4}, Theta: {:.4}°", x, y, theta);
+            
+        //     //delay 10ms
+        //     vexide::time::sleep(Duration::from_millis(10)).await;
+        // }
         loop {
-            // Get current robot position from localization
-            let pose = self.localisation.lock().get_pose();
-            let (x, y, theta) = pose.lock().get_position();
-            
-            println!("Robot Position - X: {:.4}, Y: {:.4}, Theta: {:.4}°", x, y, theta);
-            
-            //delay 10ms
             vexide::time::sleep(Duration::from_millis(10)).await;
         }
     }

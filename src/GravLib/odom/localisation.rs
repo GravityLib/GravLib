@@ -7,6 +7,7 @@ use vexide::{
 use alloc::{sync::Arc, vec::Vec};
 use vexide::io::println;
 use spin::Mutex;
+use alloc::vec;
 
 
 use uom::{si::f64::Angle, ConstZero};
@@ -38,6 +39,8 @@ impl Pose {
 pub struct Localisation {
     pub sensors: Arc<Mutex<Sensors>>,
     pub m_pose: Arc<Mutex<Pose>>,
+    prev_vertical_total: Vec<f64>,
+    prev_horizontal_total: Vec<f64>,
 }
 
 fn calculate_wheel_heading(wheels: &Vec<Arc<Mutex<TrackingWheel>>>) -> f64 {
