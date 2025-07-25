@@ -96,27 +96,32 @@ impl Localisation {
             let delta_time = time_now.duration_since(prev_time);
 
             // 1. Get tracking wheel deltas
-            let horizontal_delta = find_lateral_delta(self.sensors.lock().horizontal_wheels);
-            let vertical_delta = find_lateral_delta(self.sensors.lock().vertical_wheels);
+            let horizontal_delta = find_lateral_delta(self.sensors.lock().horizontal_wheels.clone());
+            let vertical_delta = find_lateral_delta(self.sensors.lock().vertical_wheels.clone());
             
             // 2. calculate headings.
                 // Option 1: IMU
                 // Option 2: Horizontal Wheel
                 // Option 3: Vertical Wheel
                 // Option 4: Drivetrain
-            let theta_opt: Option<f64> = self.sensors.lock().imu.lock().heading().unwrap()
-                .or_else(|| calculate_wheel_heading(&self.sensors.lock().horizontal_wheels))
-                .or_else(|| calculate_wheel_heading(&self.sensors.lock().vertical_wheels));
+            // TODO!! - Make Workie Workie for horizontal and vertical wheels
+            let theta_opt: f64 = self.sensors.lock().imu.lock().heading().unwrap();
 
-            let theta = theta_opt.unwrap_or(0.0);
+            let mut theta = 0.0;
+            if theta_opt > 0.0 {
+                let theta = theta_opt;
+            } else {
+                let theta = 0.0;
+                println!("IMU WENT WRONG!! :((((");
+            }
 
             // TODO - Add drivetrain Odom
             
             // 3. Calculate change in local coordinates
             let delta_theta = theta - self.m_pose.lock().theta;
 
-            let vertical_offset = self.sensors.lock().vertical_wheels.lock().get_offset();
-            let horizontal_offset = self.sensors.lock().horizontal_wheels.lock().get_offset();
+            let vertical_offset = self.sensors.lock().vertical_wheels[0].lock().get_offset();
+            let horizontal_offset = self.sensors.lock().horizontal_wheels[0].lock().get_offset();
 
             let (delta_x, delta_y) = compute_local_position(
                 delta_theta,
