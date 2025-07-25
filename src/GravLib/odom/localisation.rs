@@ -20,6 +20,20 @@ pub struct Pose {
     theta: f64, // in degrees
 }
 
+impl Pose {
+    pub fn new() -> Self {
+        Self {
+            x: 0.0,
+            y: 0.0,
+            theta: 0.0,
+        }
+    }
+
+    pub fn get_position(&self) -> (f64, f64, f64) {
+        (self.x, self.y, self.theta)
+    }
+}
+
 pub struct Localisation {
     sensors: Arc<Mutex<Sensors>>,
     m_pose: Arc<Mutex<Pose>>,
@@ -85,7 +99,16 @@ fn compute_local_position(
 
 
 impl Localisation {
-    // TODO - initialise m_pose to 0
+    pub fn new(sensors: Arc<Mutex<Sensors>>) -> Self {
+        Self {
+            sensors,
+            m_pose: Arc::new(Mutex::new(Pose::new())),
+        }
+    }
+
+    pub fn get_pose(&self) -> Arc<Mutex<Pose>> {
+        self.m_pose.clone()
+    }
 
     pub fn update(&mut self) {
 
