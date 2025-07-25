@@ -8,6 +8,7 @@ use alloc::{sync::Arc, vec::Vec};
 use vexide::io::println;
 use spin::Mutex;
 
+
 use uom::{si::f64::Angle, ConstZero};
 
 use libm;
@@ -35,8 +36,8 @@ impl Pose {
 }
 
 pub struct Localisation {
-    sensors: Arc<Mutex<Sensors>>,
-    m_pose: Arc<Mutex<Pose>>,
+    pub sensors: Arc<Mutex<Sensors>>,
+    pub m_pose: Arc<Mutex<Pose>>,
 }
 
 fn calculate_wheel_heading(wheels: &Vec<Arc<Mutex<TrackingWheel>>>) -> f64 {
@@ -97,81 +98,91 @@ fn compute_local_position(
     }
 }
 
-
 impl Localisation {
     pub fn new(sensors: Arc<Mutex<Sensors>>) -> Self {
+        // Pre‑allocate space to store the last total for each wheel
+        let num_v = sensors.lock().vertical_wheels.len();
+        let num_h = sensors.lock().horizontal_wheels.len();
         Self {
             sensors,
             m_pose: Arc::new(Mutex::new(Pose::new())),
+            prev_vertical_total: vec![0.0; num_v],
+            prev_horizontal_total: vec![0.0; num_h],
         }
-    }
-
-    pub fn get_pose(&self) -> Arc<Mutex<Pose>> {
-        self.m_pose.clone()
     }
 
     pub fn update(&mut self) {
-
-        let prev_time = vexide::time::Instant::now();
-        
         loop {
-            let time_now = vexide::time::Instant::now();
-            let delta_time = time_now.duration_since(prev_time);
+            // 1. Read *deltas* from each wheel
+            let mut vertical_delta  = 0.0;
+            let mut horizontal_delta = 0.0;
 
-            // 1. Get tracking wheel deltas
-            let horizontal_delta = find_lateral_delta(self.sensors.lock().horizontal_wheels.clone());
-            let vertical_delta = find_lateral_delta(self.sensors.lock().vertical_wheels.clone());
-            
-            // 2. calculate headings.
-                // Option 1: IMU
-                // Option 2: Horizontal Wheel
-                // Option 3: Vertical Wheel
-                // Option 4: Drivetrain
-            // TODO!! - Make Workie Workie for horizontal and vertical wheels
-            let theta_opt: f64 = self.sensors.lock().imu.lock().heading().unwrap();
-
-            let mut theta = 0.0;
-            if theta_opt > 0.0 {
-                let theta = theta_opt;
-            } else {
-                let theta = 0.0;
-                println!("IMU WENT WRONG!! :((((");
+            {
+                let s = self.sensors.lock();
+                for (i, w) in s.vertical_wheels.iter().enumerate() {
+                    let total = w.lock().get_distance_travelled();
+                    let delta = total - self.prev_vertical_total[i];
+                    self.prev_vertical_total[i] = total;
+                    vertical_delta = delta;
+                    break;  
+                }
+                for (i, w) in s.horizontal_wheels.iter().enumerate() {
+                    let total = w.lock().get_distance_travelled();
+                    let delta = total - self.prev_horizontal_total[i];
+                    self.prev_horizontal_total[i] = total;
+                    horizontal_delta = delta;
+                    break;
+                }
             }
 
-            // TODO - Add drivetrain Odom
-            
-            // 3. Calculate change in local coordinates
-            let delta_theta = theta - self.m_pose.lock().theta;
+            // 2. Correctly pick up theta and *assign* it
+            let mut theta = 0.0;
+            if let Ok(imu_heading) = self.sensors.lock().imu.lock().heading() {
+                theta = imu_heading; 
+            } else {
+                println!("IMU WENT WRONG!!");
+            }
 
-            let vertical_offset = self.sensors.lock().vertical_wheels[0].lock().get_offset();
+            // 3. Convert heading difference into *radians* for the chord formula
+            let old_theta = self.m_pose.lock().theta;
+            let delta_theta_deg = theta - old_theta;
+            let delta_theta_rad = delta_theta_deg.to_radians();
+
+            // 4. Compute local Δx/Δy using the chord formula
+            let vertical_offset   = self.sensors.lock().vertical_wheels[0].lock().get_offset();
             let horizontal_offset = self.sensors.lock().horizontal_wheels[0].lock().get_offset();
+            let (delta_x, delta_y) = if delta_theta_rad.abs() < 1e-6 {
+                // straight line
+                (vertical_delta, horizontal_delta)
+            } else {
+                let factor = 2.0 * libm::sin(delta_theta_rad * 0.5);
+                let inv_theta = 1.0 / delta_theta_rad;
+                let r_x = vertical_delta   * inv_theta + vertical_offset;
+                let r_y = horizontal_delta * inv_theta + horizontal_offset;
+                (factor * r_x, factor * r_y)
+            };
 
-            let (delta_x, delta_y) = compute_local_position(
-                delta_theta,
-                vertical_delta,
-                horizontal_delta,
-                vertical_offset,
-                horizontal_offset,
-            );  
-
-            // TODO - CHECK THIS FOLLOWING CODE
-
-            // 4. update gobal postion
-            let mid_heading_rad = (self.m_pose.lock().theta + delta_theta * 0.5).to_radians();
-
-            // 5. rotate local Δx/Δy into global frame:
-            let cos_h = libm::cos(mid_heading_rad);
-            let sin_h = libm::sin(mid_heading_rad);
+            // 5. Rotate into the global frame
+            let mid_heading = (old_theta + delta_theta_deg * 0.5).to_radians();
+            let cos_h = libm::cos(mid_heading);
+            let sin_h = libm::sin(mid_heading);
             let global_dx = delta_x * cos_h - delta_y * sin_h;
             let global_dy = delta_x * sin_h + delta_y * cos_h;
 
-            // 6. update your global pose
-            self.m_pose.lock().x += global_dx;
-            self.m_pose.lock().y += global_dy;
-            self.m_pose.lock().theta = theta;   // store the new absolute heading (in degrees)
+            // 6. Update your pose
+            {
+                let mut pose = self.m_pose.lock();
+                pose.x     += global_dx;
+                pose.y     += global_dy;
+                pose.theta  = theta;
+                println!(
+                  "Pose → x: {:+.4}, y: {:+.4}, θ: {:.2}°",
+                  pose.x, pose.y, pose.theta
+                );
+            }
 
+            // 7. Sleep until next tick
             vexide::time::sleep(Duration::from_millis(10));
         }
-
     }
 }

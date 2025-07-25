@@ -42,7 +42,7 @@ impl Robot {
         let sensors = Arc::new(Mutex::new(Sensors {
             horizontal_wheels: vec![horizontal_wheel],
             vertical_wheels: vec![vertical_wheel],
-            imu: Arc::new(Mutex::new(InertialSensor::new(peripherals.port_3))), // PLACEHOLDER: Configure IMU port
+            imu: Arc::new(Mutex::new(InertialSensor::new(peripherals.port_7))), // PLACEHOLDER: Configure IMU port
         }));
 
         let localisation = Arc::new(Mutex::new(Localisation::new(sensors)));
@@ -80,12 +80,17 @@ async fn main(peripherals: Peripherals) {
     let robot = Robot::new(peripherals);
     
     // Clone localisation for the update task
-    let localisation_clone = robot.localisation.clone();
-    
+    let localisation_clone: Arc<spin::mutex::Mutex<Localisation>> = robot.localisation.clone();
+
+    println!("Starting localization calibration...");
+    localisation_clone.lock().sensors.lock().imu.lock().calibrate().await;
+    println!("Localization calibration complete.");
+
     // Spawn the localization update task
     vexide::task::spawn(async move {
         localisation_clone.lock().update();
-    });
+    }).detach();
+    println!("Localization update task started.");
     
     // This hands off control to vexide's scheduler (autonomous → driver)
     robot.compete().await;
