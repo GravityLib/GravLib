@@ -1,22 +1,22 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: "[FEAT.]"
-labels: enhancement
+name: Bug report
+about: Create a report to help us improve
+title: "[BUG]"
+labels: bug
 assignees: ''
 
 ---
 
 ---
 name: `Title`
-about: `Request a feature.`
-title: `"[Feat.] <title>"`
+about: `Report a bug.`
+title: `"[BUG] <title>"`
 labels: `""`
 assignees: `""`
 
 ---
 
-### Feature
+### Bug / Feature / Question
 
 > _Please complete the relevant sections. Incomplete issues may be closed._
 
@@ -28,21 +28,20 @@ assignees: `""`
 
 ---
 
-### Current Implementation
+### Reproduction Steps
 
-> _What implementation of your feature is already existing, or is your feature new (if this is the case, state `'No Current Implementation'`)_
+> _Steps to trigger the bug. Provide the minimal setup._
 
----
-
-### Feature Use Case
-
-> _Why do you need this feature? How would it be used?_
+1.  
+2.  
+3.  
 
 ---
 
-### Motivation
+### Expected vs Actual Behaviour
 
-> _What motivated you to create this feature?_
+- **Expected:**  
+- **Actual:**  
 
 ---
 
@@ -69,4 +68,4 @@ assignees: `""`
 
 ### Other Comments? (optional)
 
-> _Are there other statements or comments you would like to make about this feature?_
+> _Are there other statements or comments you would like to make about this bug, feature or question?_
