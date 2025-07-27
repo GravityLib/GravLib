@@ -30,18 +30,29 @@ assignees: ''
 - [ ] I **HAVE** added unit tests for any new functionality or bug fixes (if applicable).  
 - [ ] I **HAVE** not broken the continuous integration build.  
 - [ ] I **HAVE** avoided major architectural changes unless previously discussed.
+- [ ] I **HAVE** adhered to GravLib naming conventions.
+- [ ] I **HAVE** tested on actual V5 hardware (if applicable).
+- [ ] I **HAVE** verified memory usage is within V5 constraints.
+- [ ] I **HAVE** checked compatibility with target VEX V5 brain firmware version.
+- [ ] I **HAVE** verified real-time performance is not negatively impacted.
 
 ---
 
 ### What Was Changed
 
-> *Detailed explanation of the technical changes.*
+> *Detailed explanation of the technical changes. Include performance impacts if relevant, and include a screenshot or image if necessary.*
+
+---
+
+### Breaking Changes
+
+> *List any breaking changes. If none, write "None".*
 
 ---
 
 ### Testing
 
-> *Describe how you tested this PR (unit tests, real hardware, simulation, etc.)*
+> *Describe how you tested this PR (unit tests, real hardware, simulation, etc.). If tested on hardware, specify which V5 components were used.*
 
 ---
 
