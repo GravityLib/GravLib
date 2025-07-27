@@ -13,9 +13,15 @@ assignees: ''
 
 ---
 
-### Description
+### Summary
 
 > *Provide a short summary of what this PR changes, fixes, or adds.*
+
+---
+
+### Motivation
+
+> *Why are you making this pull request?*
 
 ---
 
@@ -38,27 +44,9 @@ assignees: ''
 
 ---
 
-### What Was Changed
-
-> *Detailed explanation of the technical changes. Include performance impacts if relevant, and include a screenshot or image if necessary.*
-
----
-
-### Breaking Changes
-
-> *List any breaking changes. If none, write "None".*
-
----
-
 ### Testing
 
-> *Describe how you tested this PR (unit tests, real hardware, simulation, etc.). If tested on hardware, specify which V5 components were used.*
-
----
-
-### Related Issues / PRs
-
-> *Reference related issues or pull requests, e.g. `Fixes #123`, `Related to #456`.* 
+> *Describe how you tested/plan to test this PR (unit tests, real hardware, simulation, etc.). If tested on hardware, specify which V5 components were used.*
 
 ---
 
