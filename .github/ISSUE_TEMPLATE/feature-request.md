@@ -67,29 +67,6 @@ assignees: ''
 
 ---
 
-### Priority/Urgency
-
-> _When do you need this feature?_
-
-- [ ] Before next competition season
-- [ ] Nice to have soon
-- [ ] No specific timeline
-
----
-
-### Environment
-
-> _Provide environment details or leave `N/A`._
-
-- GravLib Version:  
-- VEX Brain Firmware:  
-- Rust Version:  
-- Target Platform (e.g., VEX V5, PROS, RMS, VEXCode):  
-- Operating System:
-- Specific Hardware (if applicable): 
-
----
-
 ### Acceptance Criteria
 
 > _What would make this feature complete? List specific requirements._
@@ -99,15 +76,6 @@ assignees: ''
 - [ ] e.g. Documentation updated
 - [ ] e.g. Unit tests added
 
----
-
-### Related Code / Logs
-
-> _Paste code snippets or error messages (use ``` for code blocks)._
-
-```rust
-// Example code
-```
 ---
 
 ### Other Comments? (optional)
