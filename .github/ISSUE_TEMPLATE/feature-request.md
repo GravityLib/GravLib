@@ -7,15 +7,6 @@ assignees: ''
 
 ---
 
----
-name: `Title`
-about: `Request a feature.`
-title: `"[Feat.] <title>"`
-labels: `""`
-assignees: `""`
-
----
-
 ### Feature
 
 > _Please complete the relevant sections. Incomplete issues may be closed._
@@ -34,15 +25,55 @@ assignees: `""`
 
 ---
 
-### Feature Use Case
+### Problem/Use Case
 
-> _Why do you need this feature? How would it be used?_
+> _What problem does this feature solve? How would it be used in a VEX robotics context?_
 
 ---
 
-### Motivation
+### Proposed Solutions
 
-> _What motivated you to create this feature?_
+> _Describe your ideal solution. Include code examples or API mockups if possible._
+> _For Example: ```// Example of how the feature might be used```_
+
+---
+
+### Alternatives Considered
+
+> _Describe any alternative solutions or workarounds you've considered. If none, write "None"._
+
+---
+
+### Competition Relevance
+
+> _Is this feature needed for competition use? Does it address common competition scenarios?_
+
+- [ ] Critical for competition use
+- [ ] Helpful for competition use
+- [ ] General quality of life improvement
+- [ ] Development/debugging tool
+
+---
+
+### Implementation Impact
+
+> _Consider the impact on the library (check all that apply):_
+
+- [ ] This is a breaking change
+- [ ] This may impact performance
+- [ ] This may impact memory usage
+- [ ] This requires new dependencies
+- [ ] This affects hardware compatibility
+
+---
+
+### Priority/Urgency
+
+> _When do you need this feature?_
+
+- [ ] Before next competition season
+- [ ] Nice to have soon
+- [ ] No specific timeline
 
 ---
 
@@ -54,7 +85,19 @@ assignees: `""`
 - VEX Brain Firmware:  
 - Rust Version:  
 - Target Platform (e.g., VEX V5, PROS, RMS, VEXCode):  
-- Operating System:  
+- Operating System:
+- Specific Hardware (if applicable): 
+
+---
+
+### Acceptance Criteria
+
+> _What would make this feature complete? List specific requirements._
+
+- [ ] [FILL: Criterion 1]
+- [ ] [FILL: Criterion 2]
+- [ ] e.g. Documentation updated
+- [ ] e.g. Unit tests added
 
 ---
 
