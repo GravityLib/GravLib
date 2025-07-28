@@ -13,6 +13,7 @@ use vexide::devices::math::Point2;
 use vexide::prelude::*;
 use vexide::devices::{display::*};
 
+use crate::GravLib::misc::gravlib_logo;
 use crate::GravLib::odom::{
     sensors::{TrackingWheel, Sensors},
     localisation::Localisation
@@ -51,37 +52,9 @@ impl Robot {
 
         let mut display = peripherals.display;
 
-        vexide::task::spawn(async move {
-            
-            display.draw_text(&Text::new(r" $$$$$$\                               $$\       $$\ $$\       "
-            , Font::new(FontSize::EXTRA_SMALL, FontFamily::Monospace), Point2::<i16>::from([10, 10])),
-                                Rgb::new(255, 0, 0),
-                                Some(Rgb::new(0, 0, 0)));
-            display.draw_text(&Text::new(r"$$  __$$\                              $$ |      \__|$$ |      "
-            , Font::new(FontSize::EXTRA_SMALL, FontFamily::Monospace), Point2::<i16>::from([10, 20])),
-                                Rgb::new(255, 0, 0),
-                                Some(Rgb::new(0, 0, 0)));
-            display.draw_text(&Text::new(r"$$ /  \__| $$$$$$\  $$$$$$\ $$\    $$\ $$ |      $$\ $$$$$$$\  "
-            , Font::new(FontSize::EXTRA_SMALL, FontFamily::Monospace), Point2::<i16>::from([10, 30])),
-                                Rgb::new(255, 0, 0),
-                                Some(Rgb::new(0, 0, 0)));
-            display.draw_text(&Text::new(r"$$ |$$$$\ $$  __$$\ \____$$\\$$\  $$  |$$ |      $$ |$$  __$$\ "
-            , Font::new(FontSize::EXTRA_SMALL, FontFamily::Monospace), Point2::<i16>::from([10, 40])),
-                                Rgb::new(255, 0, 0),
-                                Some(Rgb::new(0, 0, 0)));
-            display.draw_text(&Text::new(r"$$ |\_$$ |$$ |  \__|$$$$$$$ |\$$\$$  / $$ |      $$ |$$ |  $$ |"
-            , Font::new(FontSize::EXTRA_SMALL, FontFamily::Monospace), Point2::<i16>::from([10, 50])),
-                                Rgb::new(255, 0, 0),
-                                Some(Rgb::new(0, 0, 0)));
+        gravlib_logo(&mut display);
 
-            display.draw_text(&Text::new(r"\$$$$$$  |$$ |     \$$$$$$$ |  \$  /   $$$$$$$$\ $$ |$$$$$$$  |"
-            , Font::new(FontSize::EXTRA_SMALL, FontFamily::Monospace), Point2::<i16>::from([10, 60])),
-                                Rgb::new(255, 0, 0),
-                                Some(Rgb::new(0, 0, 0)));
-            display.draw_text(&Text::new(r" \______/ \__|      \_______|   \_/    \________|\__|\_______/ "
-            , Font::new(FontSize::EXTRA_SMALL, FontFamily::Monospace), Point2::<i16>::from([10, 70])),
-                                Rgb::new(255, 0, 0),
-                                Some(Rgb::new(0, 0, 0)));
+        vexide::task::spawn(async move {
             vexide::time::sleep(Duration::from_millis(10)).await;
         }).detach();
 
