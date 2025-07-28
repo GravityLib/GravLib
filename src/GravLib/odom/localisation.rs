@@ -14,7 +14,13 @@ use uom::{si::f64::Angle, ConstZero};
 
 use libm;
 
+use vexide::devices::math::Point2;
+use vexide::prelude::*;
+use vexide::devices::{display::*};
+
 use crate::GravLib::odom::sensors::{TrackingWheel, Sensors};
+
+use alloc::format;
 
 pub struct Pose {
     x: f64,
@@ -187,5 +193,21 @@ impl Localisation {
             // 7. Sleep until next tick
             vexide::time::sleep(Duration::from_millis(10));
         }
+    }
+
+    pub fn telemetry(&self, display: &mut Display) {
+        let pose = self.m_pose.lock();
+        let (x, y, theta) = pose.get_position();
+        drop(pose);
+
+        display.draw_text(
+            &Text::new(
+                "yeahh",
+                Font::new(FontSize::LARGE, FontFamily::Monospace),
+                Point2::<i16>::from([10, 10]),
+            ),
+            Rgb::new(255, 255, 255),
+            Some(Rgb::new(0, 0, 0)),
+        );
     }
 }

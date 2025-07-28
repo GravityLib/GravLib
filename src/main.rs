@@ -19,9 +19,9 @@ use crate::GravLib::odom::{
     localisation::Localisation
 };
 
-
 struct Robot {
     controller: Controller,
+    display: Arc<Mutex<Display>>,
     localisation: Arc<Mutex<Localisation>>,
 }
 
@@ -49,10 +49,7 @@ impl Robot {
         }));
 
         let localisation = Arc::new(Mutex::new(Localisation::new(sensors)));
-
-        let mut display = peripherals.display;
-
-        gravlib_logo(&mut display);
+        let display = Arc::new(Mutex::new(peripherals.display));
 
         vexide::task::spawn(async move {
             vexide::time::sleep(Duration::from_millis(10)).await;
@@ -60,10 +57,49 @@ impl Robot {
 
         Self {
             controller: peripherals.primary_controller,
+            display,
             localisation,
         }
     }
+
+    #[allow(dead_code)]
+    pub async fn initialise(&mut self) {
+        // 1. Calibrate IMU
+        println!("Robot calibration Started.");
+        
+        // 2. Draw the gravlib logo on the display
+        {
+            let mut d = self.display.lock();
+            gravlib_logo(&mut *d);
+        }
+        self.localisation.lock()
+            .sensors.lock()
+            .imu.lock()
+            .calibrate().await;
+
+        println!("Robot calibration complete.");
+        self.display.lock().erase(Rgb::new(0, 0, 0));
+        
+
+        // 3. Spawn a background task for continual localisation updates & telemetry
+        let loc = Arc::clone(&self.localisation);
+        let disp = Arc::clone(&self.display);
+
+        vexide::task::spawn(async move {
+            loop {
+                {
+                    let mut local = loc.lock();
+                    local.update();
+                    let mut d = disp.lock();
+                    local.telemetry(&mut *d);
+                }
+                // sleep between updates
+                let _ = vexide::time::sleep(Duration::from_millis(10)).await;
+            }
+        }).detach();
+    }
 }
+
 
 impl Compete for Robot {
     async fn autonomous(&mut self) {
@@ -91,20 +127,8 @@ impl Compete for Robot {
 
 #[vexide::main]
 async fn main(peripherals: Peripherals) {
-    let robot = Robot::new(peripherals);
-    
-    // Clone localisation for the update task
-    let localisation_clone: Arc<spin::mutex::Mutex<Localisation>> = robot.localisation.clone();
-
-    println!("Starting localization calibration...");
-    localisation_clone.lock().sensors.lock().imu.lock().calibrate().await;
-    println!("Localization calibration complete.");
-
-    // Spawn the localization update task
-    vexide::task::spawn(async move {
-        localisation_clone.lock().update();
-    }).detach();
-    println!("Localization update task started.");
+    let mut robot = Robot::new(peripherals);
+    robot.initialise().await;
     
     // This hands off control to vexide's scheduler (autonomous → driver)
     robot.compete().await;
