@@ -1,47 +1,25 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: "[BUG]"
+about: Report something that went wrong!
+title: "🐛[BUG] -"
 labels: bug
 assignees: ''
 
 ---
 
----
-name: `Title`
-about: `Report a bug.`
-title: `"[BUG] <title>"`
-labels: `""`
-assignees: `""`
+### Describe the bug.
+
+> _Clear and concise description of the bug.
 
 ---
 
-### Bug / Feature / Question
-
-> _Please complete the relevant sections. Incomplete issues may be closed._
-
----
-
-### Description / Summary
-
-> _Clear and concise description of the issue, request, or question._
-
----
-
-### Reproduction Steps
+### To Reproduce
 
 > _Steps to trigger the bug. Provide the minimal setup._
 
 1.  
 2.  
 3.  
-
----
-
-### Expected vs Actual Behaviour
-
-- **Expected:**  
-- **Actual:**  
 
 ---
 
@@ -52,12 +30,10 @@ assignees: `""`
 - GravLib Version:  
 - VEX Brain Firmware:  
 - Rust Version:  
-- Target Platform (e.g., VEX V5, PROS, RMS, VEXCode):  
-- Operating System:  
 
 ---
 
-### Related Code / Logs
+### Related Code / Logs 
 
 > _Paste code snippets or error messages (use ``` for code blocks)._
 
@@ -66,6 +42,7 @@ assignees: `""`
 ```
 ---
 
-### Other Comments? (optional)
+### Additional Comments (optional)
 
 > _Are there other statements or comments you would like to make about this bug, feature or question?_
+
