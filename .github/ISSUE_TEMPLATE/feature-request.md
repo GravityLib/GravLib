@@ -1,33 +1,29 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: "[FEAT.]"
-labels: ''
+title: "[FEATURE]"
+labels: enhancement
 assignees: ''
 
 ---
 
----
-name: Feature Request
-about: Suggest an idea for the project
-title: "[FEATURE]"
-labels: "enhancement"
-assignees: ""
+### Describe the Requested Feature
+
+> _Clear and concise description of the issue, request, or question._
+
 ---
 
-#### Requested Feature
-<!-- Concisely describe the behavior you are requesting here -->
+### Current Implementation
 
-<!-- Describe any details in point form here -->
- - a
- - b
- - c
+> _Is there any current implementations in the codebase that addresses this?
 
-#### Current Implementation
-<!-- Describe the current implementation here -->
+---
 
-#### Motivation
-<!-- Explain why this feature would benefit users and/or maintainers -->
+### Motivation
 
-#### (Optional) Possible Implementations and Alternatives
-<!-- Describe any possible implementations or alternatives you have considered -->
+> _Why do you think this is useful?
+
+---
+
+### Additional Comments (optional)
+
