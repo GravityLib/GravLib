@@ -1,5 +1,6 @@
 use core::time::Duration;
 
+use vexide::devices::adi::digital;
 use vexide::{
     devices::smart::InertialSensor,
 };
@@ -16,7 +17,7 @@ use libm;
 
 use vexide::devices::math::Point2;
 use vexide::prelude::*;
-use vexide::devices::{display::*};
+use vexide::devices::display::{self, *};
 
 use crate::GravLib::odom::sensors::{TrackingWheel, Sensors};
 
@@ -120,7 +121,7 @@ impl Localisation {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, display: &mut Display) {
         loop {
             // 1. Read *deltas* from each wheel
             let mut vertical_delta  = 0.0;
@@ -190,24 +191,24 @@ impl Localisation {
                 );
             }
 
+            let pose = self.m_pose.lock();
+            let (x, y, theta) = pose.get_position();
+            drop(pose);
+
+            display.set_render_mode(RenderMode::DoubleBuffered);
+            display.erase(Rgb::new(0, 0, 0));
+            display.draw_text(
+                &Text::new(
+                    &format!("X: {:+.4}\nY: {:+.4}\nθ: {:.2}°", x, y, theta),
+                    Font::new(FontSize::MEDIUM, FontFamily::Monospace),
+                    Point2::<i16>::from([10, 10]),
+                ),
+                Rgb::new(255, 255, 255),
+                Some(Rgb::new(0, 0, 0)),
+            );
+
             // 7. Sleep until next tick
             vexide::time::sleep(Duration::from_millis(10));
         }
-    }
-
-    pub fn telemetry(&self, display: &mut Display) {
-        let pose = self.m_pose.lock();
-        let (x, y, theta) = pose.get_position();
-        drop(pose);
-
-        display.draw_text(
-            &Text::new(
-                "yeahh",
-                Font::new(FontSize::LARGE, FontFamily::Monospace),
-                Point2::<i16>::from([10, 10]),
-            ),
-            Rgb::new(255, 255, 255),
-            Some(Rgb::new(0, 0, 0)),
-        );
     }
 }

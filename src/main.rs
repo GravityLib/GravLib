@@ -78,7 +78,6 @@ impl Robot {
             .calibrate().await;
 
         println!("Robot calibration complete.");
-        self.display.lock().erase(Rgb::new(0, 0, 0));
         
 
         // 3. Spawn a background task for continual localisation updates & telemetry
@@ -89,9 +88,8 @@ impl Robot {
             loop {
                 {
                     let mut local = loc.lock();
-                    local.update();
                     let mut d = disp.lock();
-                    local.telemetry(&mut *d);
+                    local.update(&mut *d);
                 }
                 // sleep between updates
                 let _ = vexide::time::sleep(Duration::from_millis(10)).await;
