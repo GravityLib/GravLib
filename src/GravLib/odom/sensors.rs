@@ -34,11 +34,8 @@ impl TrackingWheel {
     pub fn get_distance_travelled(&self) -> f64 {
         // Assume get_angle() returns the angle in degrees.
         let angle_degrees = self.rotation.position().unwrap().as_degrees();
-        // Convert degrees to number of rotations.
-        let rotations = angle_degrees / 360.0;
-        // Calculate circumference.
-        let circumference = PI * self.diameter;
-        rotations * circumference * self.ratio
+
+        angle_degrees * self.diameter * PI / 360.0
     }
 
     /// Returns the offset of the tracking wheel.

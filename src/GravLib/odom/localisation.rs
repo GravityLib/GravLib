@@ -108,6 +108,30 @@ fn compute_local_position(
     }
 }
 
+/// Reject outliers from the deltas and return the average of the remaining values.
+fn reject_outliers_and_average(deltas: &Vec<f64>, threshold: f64) -> f64 {
+    if deltas.is_empty() {
+        return 0.0;
+    }
+
+    let mean = deltas.iter().copied().sum::<f64>() / deltas.len() as f64;
+    let variance = deltas.iter().map(|d| (d - mean).powi(2)).sum::<f64>() / deltas.len() as f64;
+    let std_dev = variance.sqrt();
+
+    let filtered: Vec<f64> = deltas
+        .iter()
+        .copied()
+        .filter(|d| (d - mean).abs() <= threshold * std_dev)
+        .collect();
+
+    if filtered.is_empty() {
+        0.0 // fallback if all are outliers
+    } else {
+        filtered.iter().sum::<f64>() / filtered.len() as f64
+    }
+}
+
+
 impl Localisation {
     pub fn new(sensors: Arc<Mutex<Sensors>>) -> Self {
         // Pre‑allocate space to store the last total for each wheel
@@ -124,26 +148,33 @@ impl Localisation {
     pub fn update(&mut self, display: &mut Display) {
         loop {
             // 1. Read *deltas* from each wheel
-            let mut vertical_delta  = 0.0;
-            let mut horizontal_delta = 0.0;
+            let mut vertical_deltas = Vec::new();
+            let mut horizontal_deltas = Vec::new();
 
             {
                 let s = self.sensors.lock();
+
+                // --- Vertical wheels ---
                 for (i, w) in s.vertical_wheels.iter().enumerate() {
                     let total = w.lock().get_distance_travelled();
                     let delta = total - self.prev_vertical_total[i];
                     self.prev_vertical_total[i] = total;
-                    vertical_delta = delta;
-                    break;  
+                    vertical_deltas.push(delta);
                 }
+
+                // --- Horizontal wheels ---
                 for (i, w) in s.horizontal_wheels.iter().enumerate() {
                     let total = w.lock().get_distance_travelled();
                     let delta = total - self.prev_horizontal_total[i];
                     self.prev_horizontal_total[i] = total;
-                    horizontal_delta = delta;
-                    break;
+                    horizontal_deltas.push(delta);
                 }
             }
+
+            // Reject outliers and average the rest
+            let vertical_delta = reject_outliers_and_average(&vertical_deltas, 1.5);
+            let horizontal_delta = reject_outliers_and_average(&horizontal_deltas, 1.5);
+
 
             // 2. Correctly pick up theta and *assign* it
             let mut theta = 0.0;
@@ -163,12 +194,12 @@ impl Localisation {
             let horizontal_offset = self.sensors.lock().horizontal_wheels[0].lock().get_offset();
             let (delta_x, delta_y) = if delta_theta_rad.abs() < 1e-6 {
                 // straight line
-                (vertical_delta, horizontal_delta)
+                (horizontal_delta, vertical_delta)  // Swapped: X gets horizontal, Y gets vertical
             } else {
                 let factor = 2.0 * libm::sin(delta_theta_rad * 0.5);
                 let inv_theta = 1.0 / delta_theta_rad;
-                let r_x = vertical_delta   * inv_theta + vertical_offset;
-                let r_y = horizontal_delta * inv_theta + horizontal_offset;
+                let r_x = horizontal_delta * inv_theta + horizontal_offset;  // X uses horizontal wheel
+                let r_y = vertical_delta   * inv_theta + vertical_offset;    // Y uses vertical wheel  
                 (factor * r_x, factor * r_y)
             };
 

@@ -30,14 +30,14 @@ impl Robot {
         // Sensor configuration placeholders
         let vertical_wheel = Arc::new(Mutex::new(TrackingWheel::new(
             RotationSensor::new(peripherals.port_10, Direction::Forward), // PLACEHOLDER: Configure vertical tracking wheel port
-            4.0, // PLACEHOLDER: Set wheel diameter in inches
+            2.75, // PLACEHOLDER: Set wheel diameter in inches
             6.0, // PLACEHOLDER: Set vertical offset from center in inches
             1.0, // PLACEHOLDER: Set gear ratio
         )));
         
         let horizontal_wheel = Arc::new(Mutex::new(TrackingWheel::new(
             RotationSensor::new(peripherals.port_9, Direction::Forward), // PLACEHOLDER: Configure horizontal tracking wheel port
-            4.0, // PLACEHOLDER: Set wheel diameter in inches 
+            2.75, // PLACEHOLDER: Set wheel diameter in inches 
             -6.0, // PLACEHOLDER: Set horizontal offset from center in inches
             1.0, // PLACEHOLDER: Set gear ratio
         )));
