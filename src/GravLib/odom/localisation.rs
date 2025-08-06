@@ -71,15 +71,21 @@ fn calculate_wheel_heading(wheels: &Vec<Arc<Mutex<TrackingWheel>>>) -> f64 {
     ((distance1 - distance2) / (offset1 - offset2)) + 90.0
 }
 
+//TODO - Add thing to consider faulty sensors
 fn find_lateral_delta(sensors: Vec<Arc<Mutex<TrackingWheel>>>) -> f64 {
+    let mut data_vec = Vec::new();
     for i in 0..sensors.len() {
         let sensor = sensors[i].lock();
         let data = sensor.get_distance_travelled();
         // TODO - Handle fault sensor.
-        return data;
+        data_vec.push(data);
     }
-    // Return 0.0 if no data was found
-    0.0
+
+    return if !data_vec.is_empty() {
+        data_vec.iter().sum::<f64>() / data_vec.len() as f64
+    } else {
+        0.0 // Return 0.0 if no data was found
+    };
 }
 
 /// Compute the robot’s local (Δx, Δy) given wheel deltas & offsets and a rotation Δθ.
@@ -145,6 +151,26 @@ impl Localisation {
         }
     }
 
+    pub async fn calibrate(&mut self, calibrate_imu: bool) {
+        if calibrate_imu {
+            println!("Calibrating IMU...");
+            self.sensors.lock().imu.lock().calibrate().await;
+            println!("IMU calibration complete.");
+        } else {
+            println!("Skipping IMU calibration. (User Specified)");
+        }
+
+        self.sensors.lock().horizontal_wheels.iter().for_each(|w| {
+            w.lock().reset();
+        });
+
+        self.sensors.lock().vertical_wheels.iter().for_each(|w| {
+            w.lock().reset();
+        });
+        println!("All sensors reset.");
+        
+    }
+
     pub fn update(&mut self, display: &mut Display) {
         loop {
             // 1. Read *deltas* from each wheel
@@ -192,8 +218,11 @@ impl Localisation {
             // 4. Compute local Δx/Δy using the chord formula
             let vertical_offset   = self.sensors.lock().vertical_wheels[0].lock().get_offset();
             let horizontal_offset = self.sensors.lock().horizontal_wheels[0].lock().get_offset();
-            let (delta_x, delta_y) = if delta_theta_rad.abs() < 1e-6 {
+
+            println!("Delta θ: {:}°", delta_theta_rad);
+            let (delta_x, delta_y) = if delta_theta_rad.abs() == 0.0 {
                 // straight line
+                // println!("STRAIGHT");
                 (horizontal_delta, vertical_delta)  // Swapped: X gets horizontal, Y gets vertical
             } else {
                 let factor = 2.0 * libm::sin(delta_theta_rad * 0.5);
@@ -207,7 +236,7 @@ impl Localisation {
             let mid_heading = (old_theta + delta_theta_deg * 0.5).to_radians();
             let cos_h = libm::cos(mid_heading);
             let sin_h = libm::sin(mid_heading);
-            let global_dx = delta_x * cos_h - delta_y * sin_h;
+            let global_dx = delta_x * cos_h + delta_y * sin_h;
             let global_dy = delta_x * sin_h + delta_y * cos_h;
 
             // 6. Update your pose
@@ -216,10 +245,10 @@ impl Localisation {
                 pose.x     += global_dx;
                 pose.y     += global_dy;
                 pose.theta  = theta;
-                println!(
-                  "Pose → x: {:+.4}, y: {:+.4}, θ: {:.2}°",
-                  pose.x, pose.y, pose.theta
-                );
+                // println!(
+                //   "Pose → x: {:+.4}, y: {:+.4}, θ: {:.2}°",
+                //   pose.x, pose.y, pose.theta
+                // );
             }
 
             let pose = self.m_pose.lock();
