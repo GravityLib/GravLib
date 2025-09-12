@@ -7,6 +7,7 @@
     <img src="https://img.shields.io/github/stars/GravityLib/GravLib?style=for-the-badge&color=yellow">
     <img src="https://img.shields.io/github/contributors/GravityLib/GravLib?style=for-the-badge&color=pink">
     <img src="https://img.shields.io/badge/Flavour-Coke-red?style=for-the-badge&color=red">
+    <img src="https://img.shields.io/github/downloads/GravityLib/GravLib/total?style=for-the-badge&color=blue">
 </p>
 <hr>
 
