@@ -24,13 +24,13 @@ make sure you create releases with the link
 
 ## 🤗 Welcome!
 
-👋 Welcome Adventurer! This repository is a merged effort between programmers of active V5RC teams from The King's School (1831) in the "Push Back" 2025-26 season. 
+Welcome Adventurer! This repository is a merged effort between programmers of active V5RC teams from The King's School (1831) in the "Push Back" 2025-26 season for VEXIDE and rust. 
 
-🫢 With this project, we are aiming to extend upon the existing LemLib project by [SizzinSeal](https://github.com/SizzinSeal) and its contributors, optimising it for the "Push Back" season. 
+With this project, we are aiming to extend upon the existing LemLib project by [SizzinSeal](https://github.com/SizzinSeal) and its contributors, optimising it for the "Push Back" season. 
 
-🌟 If you decide to use our code, please consider **starring our project** (and lemlib) to support us!
+If you decide to use our code, please consider **starring our project** (and lemlib) to support us!
 
-😊 This project was heavily inspired by Lemlib and 2654E's [Echo Rust](https://github.com/alexDickhans/echo-rs) codebase!!
+This project was heavily inspired by Lemlib and 2654E's [Echo Rust](https://github.com/alexDickhans/echo-rs) codebase!!
 
 ---
 
@@ -53,7 +53,7 @@ make sure you create releases with the link
 
 **Team 1831A** is a currently active V5RC **HS** team based in the same school.
 
-**The King’s School, Parramatta**, is one of Australia’s oldest independent schools, with a strong focus on academic excellence and innovation.
+**The King’s School, Parramatta**, is one of Australia’s oldest independent schools, with a strong focus on character, academic excellence and innovation.
 
 Our robotics program competes in the **VEX V5 Robotics Competition**, regularly qualifying for Nationals and Worlds. Through robotics, we focus on engineering, coding, teamwork, and creative problem-solving, essential skills that inspired the development of this library.
 
@@ -110,16 +110,10 @@ Future tutorials will cover:
 
 Before running/building the project, ensure you have the following installed and set up:
 
-- **Rust toolchain**  
-  Install Rust using `rustup`. You will need `rustc`, `cargo`, and related tools.  
-
-- **VEXIDE**
+- [**VEXIDE**](https://vexide.dev/docs/)
 
 - **Hardware: VEX V5 Brain & Controller**  
-  A physical V5 Brain and Controller are needed to deploy/run the code.  
-
-- **Robot configured with required motors/sensors**  
-  To use the features of GravLib (like motor control, tracking, odometry etc.), your robot must have the appropriate hardware components installed (motors, sensors, etc.).
+  A physical V5 Brain and Controller are needed to deploy/run the code.
 
 ### ⬇️ Installation
 
