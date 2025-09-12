@@ -10,112 +10,141 @@
 </p>
 <hr>
 
-![Build](https://img.shields.io/github/actions/workflow/status/GravityLib/GravLib/build.yml?style=for-the-badge)
+> GravLib is currently in **Beta (V0.1)**. Expect frequent updates and potential breaking changes.  
+> You can always find the latest stable release [here](https://github.com/GravityLib/GravLib/releases).
 
-Welcome Adventurer! This repository is a merged effort between programmers of active V5RC teams **1831E and 1831A** in the "Push Back" 2025-26 season. 
+<!--TODO:
 
-With this project, we are aiming to extend upon the existing LemLib project by @SizzinSeal and its contributors, optimising it for the "Push Back" season. 
+make sure you create releases with the link
 
-If you decide to use our code, please consider **starring our project** (and lemlib) to support us!
+-->
 
----
+![👷‍♂️ Build](https://img.shields.io/github/actions/workflow/status/GravityLib/GravLib/build.yml?style=for-the-badge)
 
-## License
-This project is licensed under the MIT license. Check [LICENSE](https://github.com/1831-Code-Community/1831-Common-Codebase/blob/main/LICENSE) for more details.
+## 🤗 Welcome!
 
-## V0.1 Contents
+👋 Welcome Adventurer! This repository is a merged effort between programmers of active V5RC teams from The King's School (1831) in the "Push Back" 2025-26 season. 
 
-- [x] Driver Control 
-    - [x] Tank
-    - [x] Split Arcade
-    - [x] Single Arcade
-- [x] MotorGroup Controls
-- [ ] Odometry & Motion System
-    - [ ] Odometry Sensor Config
-    - [ ] Path Generation & PP
-    - [ ] Movement methods
-        - [ ] MoveToPose
-        - [ ] MoveToPoint
-        - [ ] TurnToHeading
-        - [ ] TurnToPoint
-        - [ ] SwingToHeading
-        - [ ] SwingToPoint
-    - [ ] Motion Chaining
-     
-          
-## Table of Contents  
+🫢 With this project, we are aiming to extend upon the existing LemLib project by [SizzinSeal](https://github.com/SizzinSeal) and its contributors, optimising it for the "Push Back" season. 
 
-- [About Us](#about-us)  
-- [Project Structure](#project-structure)  
-- [Getting Started](#getting-started)  
-- [Features](#features)  
-- [How to Contribute](#how-to-contribute)  
-- [License](#license)  
+🌟 If you decide to use our code, please consider **starring our project** (and lemlib) to support us!
+
+😊 This project was heavily inspired by Lemlib and 2654E's [Echo Rust](https://github.com/alexDickhans/echo-rs) codebase!!
 
 ---
 
-## About Us  
+## 📋 Table of Contents
 
-**Team 1831E** is a currently active V5RC **HS** team based in **The King's School, Paramatta, Sydney Australia** competing in the VEX Robotics Competition 2024-2025 "High Stakes". 
+- [🤗 Welcome!](https://github.com/GravityLib/GravLib/main/README.md#-welcome)
+- [ℹ️ About Us](https://github.com/GravityLib/GravLib/main/README.md#-about-us)
+- [🪪 License](https://github.com/GravityLib/GravLib/main/README.md#-license)
+- [🧳 V0.1 Contents](https://github.com/GravityLib/GravLib/main/README.md#-v01-contents)
+  - [📲 Features](https://github.com/GravityLib/GravLib/main/README.md#-features)
+- [👨‍🏫 Tutorials & Documentation](https://github.com/GravityLib/GravLib/main/README.md#-tutorials--documentation)
+- [🏁 Getting Started](https://github.com/GravityLib/GravLib/main/README.md#-getting-started)
+  - [📂 Prerequisites](https://github.com/GravityLib/GravLib/main/README.md#-prerequisites)
+  - [⬇️ Installation](https://github.com/GravityLib/GravLib/main/README.md#-installation)
+- [✨ How to Contribute](https://github.com/GravityLib/GravLib/main/README.md#-how-to-contribute)
+- [❓ FAQ](https://github.com/GravityLib/GravLib/main/README.md#-faq)
+
+---
+
+## ℹ️ About Us  
+
+**Team 1831E** is a currently active V5RC **HS** team based in **The King's School, Paramatta, Sydney Australia** competing in the VEX Robotics Competition 2025-2026 "Push Back". 
 
 **Team 1831A** is a currently active V5RC **HS** team based in the same school.
 
+**The King’s School, Parramatta**, is one of Australia’s oldest independent schools, with a strong focus on academic excellence and innovation.
+
+Our robotics program competes in the **VEX V5 Robotics Competition**, regularly qualifying for Nationals and Worlds. Through robotics, we focus on engineering, coding, teamwork, and creative problem-solving, essential skills that inspired the development of this library.
+
+---
+
+## 🪪 License  
+
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/GravityLib/GravLib/blob/main/LICENSE) file for details.  
+
+---  
+
+## 🧳 V0.1 Contents
+
+### 📲 Features
+- **Driver Control**
+  - Tank, Split Arcade, Single Arcade
+- **Odometry (Planned)**
+  - Supports IMU
+  - Works without tracking wheels
+  - Supports multiple tracking wheel configurations
+- **Motion**
+  - Move to Pose
+  - Turn to Point/Heading
+  - Swing to Point/Heading
+  - Pure Pursuit Path Following
+  - Motion Chaining
+- **PID Control**
+  - Generic PID class for modular tuning
+- **Subsystem Modularity**
+  - Simple MotorGroup API
+ 
 <!--
-NOTE - Commented out
----
-## Project Structure  
-
-Here's an overview of the repository:  
-
-```
-1831E-Robotics/
-├── include/            # Header files for modular design  
-│  
-├── src/                # Source code for the robot  
-│   ├── main.cpp            # Main entry point of the program  
-│   ├── controls.cpp        # Code for specific robot subsystems (e.g., drive, lift, claw)  
-│   └── robot-config.cpp    # Mostly constructurs for initiating robot devices & sensors
-│
-└── README.md           # Repository overview  
-```  
+- **Driver Quality of Life**
+  - Expo drive curves
+  - Smooth deadzone compensation
+  - Minimum output control
 -->
+ 
 ---
 
-## Getting Started  
-
-### Prerequisites  
-
-Before running the code, ensure you have the following installed:  
-- PROS API (https://pros.cs.purdue.edu/) *Recommended through VSCode Extension 
-- VEX V5 Brain and Controller  
-- Robot configured with necessary hardware components.  
-
-### Installation  
-
-1. Clone the repository to your local machine:  
-   ```bash  
-   git clone https://github.com/GravityLib/GravLib.git
-   ```  
-2. Open the project in VScode
-
-3. Build and deploy the code to the robot. with "cargo v5 build"
+## 👨‍🏫 Tutorials & Documentation
+Our documentation site is currently under construction.  
+Future tutorials will cover:
+- Setting up GravLib in PROS
+- Configuring Odometry & IMU
+- Using Motion Commands (MoveToPose, Pure Pursuit, etc.)
+- Creating Autonomous Routines
 
 ---
 
-## Features  
+## 🏁 Getting Started  
 
-- **Autonomous Modes**: Optimized routines for various competition scenarios.  
-- **Driver Control**: Streamlined controls for intuitive operation.  
-- **Subsystem Modularity**: Easy-to-modify subsystems for efficient development.  
-- **Error Handling**: Robust mechanisms to detect and handle runtime issues.  
+### 📂 Prerequisites
+
+Before running/building the project, ensure you have the following installed and set up:
+
+- **Rust toolchain**  
+  Install Rust using `rustup`. You will need `rustc`, `cargo`, and related tools.  
+
+- **VEXIDE**
+
+- **Hardware: VEX V5 Brain & Controller**  
+  A physical V5 Brain and Controller are needed to deploy/run the code.  
+
+- **Robot configured with required motors/sensors**  
+  To use the features of GravLib (like motor control, tracking, odometry etc.), your robot must have the appropriate hardware components installed (motors, sensors, etc.).
+
+### ⬇️ Installation
+
+1. Clone the repository to your local machine
+```bash
+git clone https://github.com/GravityLib/GravLib.git
+```
+
+2. Open the project in Visual Studio Code
+
+3. Build and deploy the code to the robot
+```bash
+cargo v5 build
+cargo v5 upload
+```
 
 ---
 
-## How to Contribute  
+## ✨ How to Contribute  
 
 We welcome contributions! But before you do so, please read the below: 
 
-We heavily recommend using the **GitHub Desktop** Application if you are **unfamiliar with github**, but otherwise, you can also use the CLI if you feel comfortable enough.
+We heavily recommend using the **GitHub Desktop** Application if you are unfamiliar with Github.
 
 To contribute:
 1. Fork this repository.  
@@ -128,15 +157,25 @@ To contribute:
    git commit -m "Add feature-name"  
    ```  
 4. Push your changes and create a pull request! (Thanks for contributing!)
+
 ---
 
-## License  
+## ❓ FAQ
+_**1. Is GravLib legal for VEX Robotics Competition (V5RC)?**_  
+Yes. As with any open-source code, you must be able to explain how it works (at a high level) to inspectors and judges.
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.  
+_**2. Do I need tracking wheels or an inertial sensor?**_  
+No, but both are highly recommended for best performance once odometry and motion systems are fully implemented.
 
----  
+_**3. Do I need an SD card?**_  
+No, GravLib does not require an SD card.
 
-Thanks for reading my clumsy writing, happy coding!
+_**4. What units does GravLib use?**_  
+Currently inches and degrees. Unit-agnostic support may be considered in the future.
+
+---
+
+🙏 Thanks for reading my clumsy writing, happy coding! 🙏
 
 Cheers! 🍻
 
@@ -151,4 +190,3 @@ Not contributing atm :(
 
 Sky Fan (Skiiboi) - Programmer/Project Manager of 1831D
 -->
-
