@@ -35,21 +35,18 @@ make sure you create releases with the link
 
 ## 📋 Table of Contents
 
-- [🤗 Welcome!](https://github.com/GravityLib/GravLib/main/README.md#-welcome)
-- [ℹ️ About Us](https://github.com/GravityLib/GravLib/main/README.md#-about-us)
-- [🪪 License](https://github.com/GravityLib/GravLib/main/README.md#-license)
-- [🧳 V0.1 Contents](https://github.com/GravityLib/GravLib/main/README.md#-v01-contents)
-  - [📲 Features](https://github.com/GravityLib/GravLib/main/README.md#-features)
-- [👨‍🏫 Tutorials & Documentation](https://github.com/GravityLib/GravLib/main/README.md#-tutorials--documentation)
-- [🏁 Getting Started](https://github.com/GravityLib/GravLib/main/README.md#-getting-started)
-  - [📂 Prerequisites](https://github.com/GravityLib/GravLib/main/README.md#-prerequisites)
-  - [⬇️ Installation](https://github.com/GravityLib/GravLib/main/README.md#-installation)
-- [✨ How to Contribute](https://github.com/GravityLib/GravLib/main/README.md#-how-to-contribute)
-- [❓ FAQ](https://github.com/GravityLib/GravLib/main/README.md#-faq)
+- [🤗 Welcome!](#-welcome)
+- [ℹ️ About Us](#ℹ️-about-us)
+- [🪪 License](#-license)
+- [🧳 V0.1 Contents](#-v01-contents)
+- [👨‍🏫 Tutorials & Documentation](#-tutorials--documentation)
+- [🏁 Getting Started](#-getting-started)
+- [✨ How to Contribute](#-how-to-contribute)
+- [❓ FAQ](#-faq)
 
 ---
 
-## ℹ️ About Us  
+## ℹ️ About Us
 
 **Team 1831E** is a currently active V5RC **HS** team based in **The King's School, Paramatta, Sydney Australia** competing in the VEX Robotics Competition 2025-2026 "Push Back". 
 
