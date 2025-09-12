@@ -162,7 +162,7 @@ To contribute:
 
 ## ❓ FAQ
 _**1. Is GravLib legal for VEX Robotics Competition (V5RC)?**_  
-Yes. As with any open-source code, you must be able to explain how it works (at a high level) to inspectors and judges.
+Yes. GravLib is legal for the VEX Robotics Competition as long as students can explain how it works, demonstrate understanding of the code they use, and ensure their robot still reflects their own work and skill level.
 
 _**2. Do I need tracking wheels or an inertial sensor?**_  
 No, but both are highly recommended for best performance once odometry and motion systems are fully implemented.
