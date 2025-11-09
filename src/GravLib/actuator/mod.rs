@@ -3,5 +3,8 @@ pub mod motor_group;
 // TODO - FIX MOTORGROUP
 
 // pub use smartmotor::SmartMotor;
+// pub mod smartmotor;
+
+// pub use smartmotor::SmartMotor;
 
 pub use motor_group::MotorGroup; 
